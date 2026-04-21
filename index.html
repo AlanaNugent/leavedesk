@@ -461,17 +461,31 @@ tbody tr:hover .actions-cell { opacity: 1; }
 /* Responsive */
 @media (max-width: 768px) {
   .sidebar { display: none !important; }
-  #desktopLayout { display: block !important; height: auto !important; overflow: visible !important; }
-  .app { display: block !important; height: 100vh !important; overflow: hidden !important; }
+  #desktopLayout {
+    display: block !important;
+    overflow: visible !important;
+    height: auto !important;
+    flex: none !important;
+  }
+  .app {
+    display: block !important;
+    height: 100% !important;
+    overflow: visible !important;
+  }
+  body {
+    height: 100vh;
+    overflow: hidden;
+  }
   .main {
     display: block !important;
-    width: 100% !important;
+    flex: none !important;
+    width: 100vw !important;
     height: calc(100vh - 52px - 65px) !important;
     overflow-y: auto !important;
     -webkit-overflow-scrolling: touch !important;
-    padding: 0.75rem 0.85rem 1rem !important;
+    padding: 0.75rem 0.85rem 1.5rem !important;
     box-sizing: border-box !important;
-    flex: none !important;
+    position: relative !important;
   }
   .stats-grid { grid-template-columns: 1fr 1fr; }
   .page-header { flex-direction: column; gap: 0.75rem; }
@@ -613,7 +627,7 @@ tbody tr:hover .actions-cell { opacity: 1; }
   </div>
 
   <!-- Desktop layout: sidebar + main side by side -->
-  <div style="display:flex;flex:1;overflow:hidden;height:calc(100vh - 0px);" id="desktopLayout">
+  <div style="display:flex;flex:1;overflow:hidden;" id="desktopLayout">
 
   <!-- Sidebar -->
   <nav class="sidebar">
