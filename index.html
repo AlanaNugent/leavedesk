@@ -1233,10 +1233,11 @@ function renderManagers() {
   </div>
 
   <div class="card">
-    <table>
+    <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;">
+    <table style="min-width:700px;">
       <thead>
         <tr>
-          <th>Manager</th>
+          <th style="position:sticky;left:0;z-index:2;background:var(--bg);min-width:160px;">Manager</th>
           <th>Department</th>
           <th>Working Days</th>
           <th>Allowance</th>
@@ -1259,7 +1260,7 @@ function renderManagers() {
           const pcolor = pct>85?'var(--red)':pct>60?'var(--amber)':pal.bg;
           const ul = unitLabel(m, false);
           return `<tr>
-            <td>
+            <td style="position:sticky;left:0;z-index:1;background:var(--surface);border-right:1px solid var(--border);">
               <div class="person-cell">
                 <div class="avatar" style="background:${pal.bg};color:${pal.text}">${initials(m.name)}</div>
                 <div>
@@ -1269,9 +1270,9 @@ function renderManagers() {
               </div>
             </td>
             <td><span class="dept-tag">${m.dept}</span></td>
-            <td style="font-size:12px;color:var(--text-muted);">${workdayLabel(m.workDays)}</td>
-            <td style="font-family:'DM Mono',monospace">${m.allowance} ${unitLabel(m)}</td>
-            <td style="font-family:'DM Mono',monospace">${taken} ${unitLabel(m)}</td>
+            <td style="font-size:12px;color:var(--text-muted);white-space:nowrap;">${workdayLabel(m.workDays)}</td>
+            <td style="font-family:'DM Mono',monospace;white-space:nowrap;">${m.allowance} ${unitLabel(m)}</td>
+            <td style="font-family:'DM Mono',monospace;white-space:nowrap;">${taken} ${unitLabel(m)}</td>
             <td>
               <div class="progress-wrap">
                 <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${pcolor}"></div></div>
@@ -1293,6 +1294,7 @@ function renderManagers() {
         }).join('')}
       </tbody>
     </table>
+    </div>
   </div>`;
 }
 
