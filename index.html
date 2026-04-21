@@ -1,10 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+<html lang="en"><head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LeaveDesk — Manager Holiday Tracker</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&amp;family=DM+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
 <style>
 :root {
   --bg: #F5F3EE;
@@ -424,83 +422,8 @@ tbody tr:hover .actions-cell { opacity: 1; }
 /* Responsive */
 @media (max-width: 768px) {
   .sidebar { display: none; }
-  .main { padding: 1rem 0.85rem 5.5rem; }
+  .main { padding: 1rem; }
   .stats-grid { grid-template-columns: 1fr 1fr; }
-  .page-header { flex-direction: column; gap: 0.75rem; }
-  .page-header .header-actions { width: 100%; flex-wrap: wrap; }
-  .page-header .header-actions .btn { flex: 1; justify-content: center; font-size: 13px; padding: 8px 10px; }
-  .search-input { width: 100%; }
-  .card { border-radius: 12px; }
-  table { font-size: 12.5px; }
-  thead th { padding: 8px 10px; font-size: 10px; }
-  tbody td { padding: 10px 10px; }
-  .actions-cell { opacity: 1; }
-  .modal { padding: 1.25rem; max-height: 85vh; border-radius: 16px 16px 0 0; margin-top: auto; }
-  .overlay { align-items: flex-end; padding: 0; }
-  .form-row-2 { grid-template-columns: 1fr; }
-}
-
-/* Mobile bottom nav */
-.mobile-nav {
-  display: none;
-  position: fixed;
-  bottom: 0; left: 0; right: 0;
-  background: var(--surface);
-  border-top: 1px solid var(--border);
-  z-index: 300;
-  padding: 6px 0 env(safe-area-inset-bottom, 6px);
-}
-.mobile-nav-inner { display: flex; justify-content: space-around; align-items: center; }
-.mob-btn {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 3px;
-  padding: 6px 12px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: var(--text-muted);
-  font-family: 'DM Sans', sans-serif;
-  font-size: 10px;
-  font-weight: 500;
-  border-radius: 8px;
-  transition: color 0.15s;
-  min-width: 56px;
-}
-.mob-btn svg { width: 20px; height: 20px; }
-.mob-btn.active { color: var(--accent); }
-.mob-btn.request-btn {
-  color: #fff;
-  background: var(--accent);
-  border-radius: 14px;
-  padding: 8px 14px;
-  font-size: 11px;
-}
-.mob-btn.request-btn svg { width: 18px; height: 18px; }
-
-/* Mobile top bar */
-.mobile-topbar {
-  display: none;
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  padding: 12px 1rem;
-  align-items: center;
-  justify-content: space-between;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-.mobile-logo { font-size: 16px; font-weight: 600; color: var(--text); letter-spacing: -0.3px; }
-.mobile-year { display: flex; align-items: center; gap: 6px; }
-.mobile-year-btn { background: none; border: none; cursor: pointer; color: var(--text-muted); font-size: 18px; padding: 0 2px; line-height: 1; }
-.mobile-year-val { font-size: 14px; font-weight: 500; font-family: 'DM Mono', monospace; }
-
-@media (max-width: 768px) {
-  .mobile-nav { display: block; }
-  .mobile-topbar { display: flex; }
-  .main { padding-top: 0; }
-  .toast { bottom: 80px; }
 }
 
 /* Tabs */
@@ -555,94 +478,272 @@ tbody tr:hover .actions-cell { opacity: 1; }
 <body>
 
 <div class="app">
-
-  <!-- Mobile top bar -->
-  <div class="mobile-topbar">
-    <div class="mobile-logo">&#127807; LeaveDesk</div>
-    <div class="mobile-year">
-      <button class="mobile-year-btn" onclick="changeYear(-1)">&#8249;</button>
-      <span class="mobile-year-val" id="mobileYear">2026</span>
-      <button class="mobile-year-btn" onclick="changeYear(1)">&#8250;</button>
-    </div>
-  </div>
-
   <!-- Sidebar -->
   <nav class="sidebar">
     <div class="logo">
-      <div class="logo-mark">&#127807; LeaveDesk</div>
+      <div class="logo-mark">🌿 LeaveDesk</div>
       <div class="logo-sub">Manager Holiday Tracker</div>
     </div>
     <div class="nav">
       <div class="nav-label">Overview</div>
       <button class="nav-item active" onclick="showPage('dashboard')">
-        <svg class="nav-icon" viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="6" height="6" rx="1.5" fill="currentColor" opacity=".8"/><rect x="9" y="1" width="6" height="6" rx="1.5" fill="currentColor" opacity=".5"/><rect x="1" y="9" width="6" height="6" rx="1.5" fill="currentColor" opacity=".5"/><rect x="9" y="9" width="6" height="6" rx="1.5" fill="currentColor" opacity=".3"/></svg>
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="6" height="6" rx="1.5" fill="currentColor" opacity=".8"></rect><rect x="9" y="1" width="6" height="6" rx="1.5" fill="currentColor" opacity=".5"></rect><rect x="1" y="9" width="6" height="6" rx="1.5" fill="currentColor" opacity=".5"></rect><rect x="9" y="9" width="6" height="6" rx="1.5" fill="currentColor" opacity=".3"></rect></svg>
         Dashboard
       </button>
       <button class="nav-item" onclick="showPage('calendar')">
-        <svg class="nav-icon" viewBox="0 0 16 16" fill="none"><rect x="1.5" y="3" width="13" height="11" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M5 1.5V4M11 1.5V4M1.5 7h13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none"><rect x="1.5" y="3" width="13" height="11" rx="2" stroke="currentColor" stroke-width="1.5"></rect><path d="M5 1.5V4M11 1.5V4M1.5 7h13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path></svg>
         Calendar
       </button>
       <button class="nav-item" onclick="showPage('bookings')">
-        <svg class="nav-icon" viewBox="0 0 16 16" fill="none"><path d="M3 4h10M3 8h7M3 12h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none"><path d="M3 4h10M3 8h7M3 12h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path></svg>
         All Requests
       </button>
 
       <div class="nav-label">Admin</div>
       <button class="nav-item" onclick="showPage('managers')">
-        <svg class="nav-icon" viewBox="0 0 16 16" fill="none"><circle cx="6" cy="5" r="3" fill="currentColor" opacity=".8"/><path d="M1 13c0-2.761 2.239-5 5-5s5 2.239 5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity=".8"/><circle cx="12" cy="5" r="2" fill="currentColor" opacity=".5"/><path d="M14 13c0-1.657-.895-3-2-3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity=".5"/></svg>
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none"><circle cx="6" cy="5" r="3" fill="currentColor" opacity=".8"></circle><path d="M1 13c0-2.761 2.239-5 5-5s5 2.239 5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity=".8"></path><circle cx="12" cy="5" r="2" fill="currentColor" opacity=".5"></circle><path d="M14 13c0-1.657-.895-3-2-3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity=".5"></path></svg>
         Managers
       </button>
       <button class="nav-item" onclick="openAddManager()">
-        <svg class="nav-icon" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="6" r="3.5" stroke="currentColor" stroke-width="1.5"/><path d="M2 14c0-2.5 2-4.5 5-4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M12 10v4M10 12h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="6" r="3.5" stroke="currentColor" stroke-width="1.5"></circle><path d="M2 14c0-2.5 2-4.5 5-4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path><path d="M12 10v4M10 12h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path></svg>
         Add Manager
       </button>
 
       <div class="nav-label">Request</div>
       <button class="nav-item" onclick="openRequestModal()">
-        <svg class="nav-icon" viewBox="0 0 16 16" fill="none"><rect x="1.5" y="3" width="13" height="11" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M5 1.5V4M11 1.5V4M8 7v4M6 9h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none"><rect x="1.5" y="3" width="13" height="11" rx="2" stroke="currentColor" stroke-width="1.5"></rect><path d="M5 1.5V4M11 1.5V4M8 7v4M6 9h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path></svg>
         Request Holiday
       </button>
     </div>
     <div class="sidebar-footer">
       <div class="year-switcher">
-        <button class="year-btn" onclick="changeYear(-1)">&#8249;</button>
+        <button class="year-btn" onclick="changeYear(-1)">‹</button>
         <span class="year-val" id="sidebarYear">2026</span>
-        <button class="year-btn" onclick="changeYear(1)">&#8250;</button>
+        <button class="year-btn" onclick="changeYear(1)">›</button>
       </div>
-      <button onclick="exportForSharing()" style="width:100%;margin-top:8px;padding:7px;background:#2C5F2E;border:none;font-size:12px;color:#fff;cursor:pointer;border-radius:6px;font-family:'DM Sans',sans-serif;font-weight:500;" onmouseover="this.style.background='#224A24'" onmouseout="this.style.background='#2C5F2E'">&#8659; Export for sharing</button>
-      <button onclick="clearAllData()" style="width:100%;margin-top:6px;padding:6px;background:none;border:none;font-size:11px;color:var(--text-faint);cursor:pointer;border-radius:6px;font-family:'DM Sans',sans-serif;" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--text-faint)'">&#x21BA; Reset to demo data</button>
+      <button onclick="exportForSharing()" style="width: 100%; margin-top: 8px; padding: 7px; background: rgb(34, 74, 36); border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; font-size: 12px; color: rgb(255, 255, 255); cursor: pointer; border-radius: 6px; font-family: &quot;DM Sans&quot;, sans-serif; font-weight: 500;" onmouseover="this.style.background='#224A24'" onmouseout="this.style.background='#2C5F2E'">⇓ Export for sharing</button>
+      <button onclick="clearAllData()" style="width: 100%; margin-top: 6px; padding: 6px; background: none; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; font-size: 11px; color: var(--text-faint); cursor: pointer; border-radius: 6px; font-family: &quot;DM Sans&quot;, sans-serif;" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--text-faint)'">↺ Reset to demo data</button>
     </div>
   </nav>
 
   <!-- Main content -->
-  <main class="main" id="mainContent"></main>
-
-  <!-- Mobile bottom nav -->
-  <nav class="mobile-nav">
-    <div class="mobile-nav-inner">
-      <button class="mob-btn active" id="mob-dashboard" onclick="showPage('dashboard')">
-        <svg viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="6" height="6" rx="1.5" fill="currentColor" opacity=".8"/><rect x="9" y="1" width="6" height="6" rx="1.5" fill="currentColor" opacity=".5"/><rect x="1" y="9" width="6" height="6" rx="1.5" fill="currentColor" opacity=".5"/><rect x="9" y="9" width="6" height="6" rx="1.5" fill="currentColor" opacity=".3"/></svg>
-        Home
-      </button>
-      <button class="mob-btn" id="mob-calendar" onclick="showPage('calendar')">
-        <svg viewBox="0 0 16 16" fill="none"><rect x="1.5" y="3" width="13" height="11" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M5 1.5V4M11 1.5V4M1.5 7h13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-        Calendar
-      </button>
-      <button class="mob-btn request-btn" onclick="openRequestModal()">
-        <svg viewBox="0 0 16 16" fill="none"><rect x="1.5" y="3" width="13" height="11" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M5 1.5V4M11 1.5V4M8 7v4M6 9h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-        Request
-      </button>
-      <button class="mob-btn" id="mob-bookings" onclick="showPage('bookings')">
-        <svg viewBox="0 0 16 16" fill="none"><path d="M3 4h10M3 8h7M3 12h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-        Requests
-      </button>
-      <button class="mob-btn" id="mob-managers" onclick="showPage('managers')">
-        <svg viewBox="0 0 16 16" fill="none"><circle cx="6" cy="5" r="3" fill="currentColor" opacity=".8"/><path d="M1 13c0-2.761 2.239-5 5-5s5 2.239 5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity=".8"/><circle cx="12" cy="5" r="2" fill="currentColor" opacity=".5"/><path d="M14 13c0-1.657-.895-3-2-3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity=".5"/></svg>
-        Team
-      </button>
+  <main class="main" id="mainContent">
+  <div class="page-header">
+    <div>
+      <div class="page-title">Dashboard</div>
+      <div class="page-sub">2026 overview — Alana, Alison, Amanda, Christopher, Emma, Gulnaz, Joanne, Melissa, Roxanne, Susan</div>
     </div>
-  </nav>
+    <div class="header-actions">
+      <button class="btn btn-secondary" onclick="openRequestModal()">+ Request Holiday</button>
+      <button class="btn btn-primary" onclick="openAddManager()">+ Add Manager</button>
+    </div>
+  </div>
 
+  <div class="stats-grid">
+    <div class="stat-card accent">
+      <div class="stat-label">Managers tracked</div>
+      <div class="stat-value">10</div>
+      <div class="stat-sub">across 4 departments</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Off today</div>
+      <div class="stat-value" style="color:var(--amber)">1</div>
+      <div class="stat-sub">manager(s) on leave</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Avg days taken (2026)</div>
+      <div class="stat-value">15</div>
+      <div class="stat-sub">out of avg 44 allowance</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Pending approvals</div>
+      <div class="stat-value" style="color:var(--text)">0</div>
+      <div class="stat-sub">bookings awaiting approval</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Low allowance alerts</div>
+      <div class="stat-value" style="color:var(--red)">1</div>
+      <div class="stat-sub">managers with &lt;5 days left</div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;flex-wrap:wrap;">
+    <div class="card" style="min-width:280px">
+      <div class="card-header">
+        <span class="card-title">Allowance overview</span>
+        <span style="font-size:12px;color:var(--text-muted)">2026</span>
+      </div>
+      <div style="padding:0">
+        <div style="padding:12px 16px;border-bottom:1px solid var(--border);">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+              <div class="avatar" style="background:#2C5F2E;color:#E8F0E8;width:26px;height:26px;font-size:10px;">AN</div>
+              <span style="font-weight:500;font-size:13px;flex:1">Alana</span>
+              <span style="font-size:12px;font-family:'DM Mono',monospace;color:var(--text-muted)">18/30day</span>
+              
+            </div>
+            <div class="progress-bar" style="width:100%;height:8px;">
+              <div class="progress-fill" style="width:60%;background:#2C5F2E;"></div>
+            </div>
+          </div><div style="padding:12px 16px;border-bottom:1px solid var(--border);">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+              <div class="avatar" style="background:#2A5A8C;color:#E6EEF7;width:26px;height:26px;font-size:10px;">AC</div>
+              <span style="font-weight:500;font-size:13px;flex:1">Alison</span>
+              <span style="font-size:12px;font-family:'DM Mono',monospace;color:var(--text-muted)">5/17day</span>
+              
+            </div>
+            <div class="progress-bar" style="width:100%;height:8px;">
+              <div class="progress-fill" style="width:29%;background:#2A5A8C;"></div>
+            </div>
+          </div><div style="padding:12px 16px;border-bottom:1px solid var(--border);">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+              <div class="avatar" style="background:#7C3D6E;color:#F5EAF2;width:26px;height:26px;font-size:10px;">AW</div>
+              <span style="font-weight:500;font-size:13px;flex:1">Amanda</span>
+              <span style="font-size:12px;font-family:'DM Mono',monospace;color:var(--text-muted)">23.5/28day</span>
+              <span class="badge badge-red" style="font-size:10px;">4.5day left</span>
+            </div>
+            <div class="progress-bar" style="width:100%;height:8px;">
+              <div class="progress-fill" style="width:84%;background:var(--amber);"></div>
+            </div>
+          </div><div style="padding:12px 16px;border-bottom:1px solid var(--border);">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+              <div class="avatar" style="background:#8C5C2A;color:#F7EEDF;width:26px;height:26px;font-size:10px;">CD</div>
+              <span style="font-weight:500;font-size:13px;flex:1">Christopher</span>
+              <span style="font-size:12px;font-family:'DM Mono',monospace;color:var(--text-muted)">10/28day</span>
+              
+            </div>
+            <div class="progress-bar" style="width:100%;height:8px;">
+              <div class="progress-fill" style="width:36%;background:#8C5C2A;"></div>
+            </div>
+          </div><div style="padding:12px 16px;border-bottom:1px solid var(--border);">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+              <div class="avatar" style="background:#3D6B6B;color:#E0F0F0;width:26px;height:26px;font-size:10px;">EH</div>
+              <span style="font-weight:500;font-size:13px;flex:1">Emma</span>
+              <span style="font-size:12px;font-family:'DM Mono',monospace;color:var(--text-muted)">18.5/28day</span>
+              
+            </div>
+            <div class="progress-bar" style="width:100%;height:8px;">
+              <div class="progress-fill" style="width:66%;background:var(--amber);"></div>
+            </div>
+          </div><div style="padding:12px 16px;border-bottom:1px solid var(--border);">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+              <div class="avatar" style="background:#5E3D8C;color:#EDE6F7;width:26px;height:26px;font-size:10px;">GA</div>
+              <span style="font-weight:500;font-size:13px;flex:1">Gulnaz</span>
+              <span style="font-size:12px;font-family:'DM Mono',monospace;color:var(--text-muted)">20.5/31day</span>
+              
+            </div>
+            <div class="progress-bar" style="width:100%;height:8px;">
+              <div class="progress-fill" style="width:66%;background:var(--amber);"></div>
+            </div>
+          </div><div style="padding:12px 16px;border-bottom:1px solid var(--border);">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+              <div class="avatar" style="background:#6B3D3D;color:#F7E8E8;width:26px;height:26px;font-size:10px;">JF</div>
+              <span style="font-weight:500;font-size:13px;flex:1">Joanne</span>
+              <span style="font-size:12px;font-family:'DM Mono',monospace;color:var(--text-muted)">25/112hr</span>
+              
+            </div>
+            <div class="progress-bar" style="width:100%;height:8px;">
+              <div class="progress-fill" style="width:22%;background:#6B3D3D;"></div>
+            </div>
+          </div><div style="padding:12px 16px;border-bottom:1px solid var(--border);">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+              <div class="avatar" style="background:#3D6B3D;color:#E0F0E0;width:26px;height:26px;font-size:10px;">MD</div>
+              <span style="font-weight:500;font-size:13px;flex:1">Melissa</span>
+              <span style="font-size:12px;font-family:'DM Mono',monospace;color:var(--text-muted)">68.5/110.5hr</span>
+              
+            </div>
+            <div class="progress-bar" style="width:100%;height:8px;">
+              <div class="progress-fill" style="width:62%;background:var(--amber);"></div>
+            </div>
+          </div><div style="padding:12px 16px;border-bottom:1px solid var(--border);">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+              <div class="avatar" style="background:#2C5F2E;color:#E8F0E8;width:26px;height:26px;font-size:10px;">RA</div>
+              <span style="font-weight:500;font-size:13px;flex:1">Roxanne</span>
+              <span style="font-size:12px;font-family:'DM Mono',monospace;color:var(--text-muted)">15/32day</span>
+              
+            </div>
+            <div class="progress-bar" style="width:100%;height:8px;">
+              <div class="progress-fill" style="width:47%;background:#2C5F2E;"></div>
+            </div>
+          </div><div style="padding:12px 16px;border-bottom:1px solid var(--border);">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+              <div class="avatar" style="background:#2A5A8C;color:#E6EEF7;width:26px;height:26px;font-size:10px;">SC</div>
+              <span style="font-weight:500;font-size:13px;flex:1">Susan</span>
+              <span style="font-size:12px;font-family:'DM Mono',monospace;color:var(--text-muted)">21/28day</span>
+              
+            </div>
+            <div class="progress-bar" style="width:100%;height:8px;">
+              <div class="progress-fill" style="width:75%;background:var(--amber);"></div>
+            </div>
+          </div>
+      </div>
+    </div>
+
+    <div class="card" style="min-width:280px">
+      <div class="card-header">
+        <span class="card-title">Upcoming leave</span>
+        <button class="btn btn-ghost btn-sm" onclick="showPage('bookings')">View all requests</button>
+      </div>
+      <div>
+        
+        <div class="booking-item">
+            <div class="booking-color" style="background:#2C5F2E"></div>
+            <div class="booking-info">
+              <div class="booking-name">Roxanne Abel</div>
+              <div class="booking-dates">20 Apr 2026 → 22 Apr 2026</div>
+              
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
+              <span style="font-size:12px;font-family:'DM Mono',monospace;color:var(--text-muted)">3 days</span>
+              <span class="badge badge-green" style="font-size:10px;">approved</span>
+            </div>
+          </div><div class="booking-item">
+            <div class="booking-color" style="background:#7C3D6E"></div>
+            <div class="booking-info">
+              <div class="booking-name">Amanda Walsh</div>
+              <div class="booking-dates">4 May 2026 → 8 May 2026</div>
+              
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
+              <span style="font-size:12px;font-family:'DM Mono',monospace;color:var(--text-muted)">5 days</span>
+              <span class="badge badge-green" style="font-size:10px;">approved</span>
+            </div>
+          </div><div class="booking-item">
+            <div class="booking-color" style="background:#3D6B3D"></div>
+            <div class="booking-info">
+              <div class="booking-name">Melissa Dempster</div>
+              <div class="booking-dates">11 May 2026 → 11 May 2026</div>
+              
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
+              <span style="font-size:12px;font-family:'DM Mono',monospace;color:var(--text-muted)">7.5 hrs</span>
+              <span class="badge badge-green" style="font-size:10px;">approved</span>
+            </div>
+          </div><div class="booking-item">
+            <div class="booking-color" style="background:#3D6B3D"></div>
+            <div class="booking-info">
+              <div class="booking-name">Melissa Dempster</div>
+              <div class="booking-dates">12 May 2026 → 19 May 2026</div>
+              
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
+              <span style="font-size:12px;font-family:'DM Mono',monospace;color:var(--text-muted)">23 hrs</span>
+              <span class="badge badge-green" style="font-size:10px;">approved</span>
+            </div>
+          </div><div class="booking-item">
+            <div class="booking-color" style="background:#5E3D8C"></div>
+            <div class="booking-info">
+              <div class="booking-name">Gulnaz Amjad</div>
+              <div class="booking-dates">22 May 2026 → 31 May 2026</div>
+              
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
+              <span style="font-size:12px;font-family:'DM Mono',monospace;color:var(--text-muted)">6 days</span>
+              <span class="badge badge-green" style="font-size:10px;">approved</span>
+            </div>
+          </div>
+      </div>
+    </div>
+  </div></main>
 </div>
 
 <!-- Modals -->
@@ -723,7 +824,7 @@ tbody tr:hover .actions-cell { opacity: 1; }
         <input class="form-input" id="bookDuration" type="number" min="0.5" step="0.5" placeholder="e.g. 3" oninput="onDurationEdit()">
         <span id="bookDurationUnit" style="font-size:13px;color:var(--text-muted);min-width:36px;"></span>
       </div>
-      <div class="form-hint">Auto-filled from your dates &mdash; edit if your hours vary day to day.</div>
+      <div class="form-hint">Auto-filled from your dates — edit if your hours vary day to day.</div>
     </div>
     <div class="form-row">
       <label class="form-label">Reason / Notes (optional)</label>
@@ -731,7 +832,7 @@ tbody tr:hover .actions-cell { opacity: 1; }
     </div>
     <div class="conflict-warning" id="conflictWarn"></div>
     <div style="background:var(--blue-light);border-radius:var(--radius);padding:10px 14px;font-size:12.5px;color:var(--blue);margin-top:8px;">
-      &#9993; Your request will be sent to <strong>Alana Nugent</strong> for approval by email.
+      ✉ Your request will be sent to <strong>Alana Nugent</strong> for approval by email.
     </div>
     <div class="modal-actions">
       <button class="btn btn-ghost" onclick="closeModal('bookingModal')">Cancel</button>
@@ -781,75 +882,33 @@ const DEFAULT_BOOKINGS = [
   { id:10, mgr:5, start:'2026-08-24', end:'2026-08-28', status:'approved', notes:'' },
 ];
 
-// ─── JSONBin Cloud Storage ───────────────────────────────
-const JSONBIN_BIN_ID = '69e73e1a36566621a8d69f2a';
-const JSONBIN_KEY = '$2a$10$xKsVPGYva55CZIP4jyG/du9z.j/QwoAHXpUQnf5qK57T7aDqwS/UW';
-const JSONBIN_URL = `https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`;
-
-function showLoadingScreen(msg) {
-  let el = document.getElementById('loadingScreen');
-  if(!el) {
-    el = document.createElement('div');
-    el.id = 'loadingScreen';
-    el.style.cssText = 'position:fixed;inset:0;background:#F5F3EE;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;font-family:DM Sans,sans-serif;gap:16px;';
-    el.innerHTML = `<div style="font-size:28px;">&#127807;</div><div style="font-size:16px;font-weight:500;color:#1A1916;" id="loadingMsg">Loading...</div><div style="width:40px;height:3px;background:#2C5F2E;border-radius:2px;animation:ldbar 1.2s ease-in-out infinite alternate;"></div><style>@keyframes ldbar{from{opacity:0.3;transform:scaleX(0.5)}to{opacity:1;transform:scaleX(1)}}</style>`;
-    document.body.appendChild(el);
-  }
-  el.style.display = 'flex';
-  document.getElementById('loadingMsg').textContent = msg || 'Loading...';
-}
-
-function hideLoadingScreen() {
-  const el = document.getElementById('loadingScreen');
-  if(el) el.style.display = 'none';
-}
-
-async function loadData() {
-  showLoadingScreen('Loading LeaveDesk...');
+function loadData() {
   try {
-    const res = await fetch(JSONBIN_URL + '/latest', {
-      headers: { 'X-Master-Key': JSONBIN_KEY }
-    });
-    if(res.ok) {
-      const json = await res.json();
-      const d = json.record;
-      if(d && d.managers && d.managers.length > 0) {
-        managers = d.managers;
-        bookings = d.bookings || [];
-        nextMgrId = d.nextMgrId || (Math.max(0,...managers.map(m=>m.id))+1);
-        nextId = d.nextId || (Math.max(0,...(bookings.length?bookings.map(b=>b.id):[0]))+1);
-        hideLoadingScreen();
-        return;
-      }
+    const saved = localStorage.getItem('leavedesk_v1');
+    if (saved) {
+      const d = JSON.parse(saved);
+      managers = d.managers || DEFAULT_MANAGERS;
+      bookings = d.bookings || DEFAULT_BOOKINGS;
+      nextMgrId = d.nextMgrId || (Math.max(0,...managers.map(m=>m.id))+1);
+      nextId = d.nextId || (Math.max(0,...bookings.map(b=>b.id))+1);
+      return;
     }
   } catch(e) {}
-  // Fall back to defaults if bin is empty or unreachable
   managers = JSON.parse(JSON.stringify(DEFAULT_MANAGERS));
   bookings = JSON.parse(JSON.stringify(DEFAULT_BOOKINGS));
   nextId = 11; nextMgrId = 6;
-  hideLoadingScreen();
 }
 
-async function saveData() {
-  // Save to localStorage as instant backup
-  try { localStorage.setItem('leavedesk_v1', JSON.stringify({managers, bookings, nextId, nextMgrId})); } catch(e) {}
-  // Save to JSONBin cloud
+function saveData() {
   try {
-    await fetch(JSONBIN_URL, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json', 'X-Master-Key': JSONBIN_KEY },
-      body: JSON.stringify({ managers, bookings, nextId, nextMgrId })
-    });
-  } catch(e) {
-    showToast('Warning: cloud save failed — data saved locally only');
-  }
+    localStorage.setItem('leavedesk_v1', JSON.stringify({managers, bookings, nextId, nextMgrId}));
+  } catch(e) {}
 }
 
 let managers, bookings, nextId, nextMgrId;
+loadData();
 
 // ─── Utils ───────────────────────────────────────────────
-document.getElementById('sidebarYear').textContent = year;
-loadData().then(() => { render(); });
 function initials(name) { return name.trim().split(/\s+/).map(w=>w[0]).join('').toUpperCase().slice(0,2); }
 function palette(idx) { return PALETTES[idx % PALETTES.length]; }
 function isWeekend(d) { const day = new Date(d+'T12:00:00').getDay(); return day===0||day===6; }
@@ -941,19 +1000,12 @@ function showPage(page) {
     const onclick = el.getAttribute('onclick')||'';
     el.classList.toggle('active', onclick.includes(`'${page}'`));
   });
-  // Sync mobile bottom nav
-  ['dashboard','calendar','bookings','managers'].forEach(p=>{
-    const el = document.getElementById('mob-'+p);
-    if(el) el.classList.toggle('active', p===page);
-  });
   render();
 }
 
 function changeYear(dir) {
   year += dir;
   document.getElementById('sidebarYear').textContent = year;
-  const mob = document.getElementById('mobileYear');
-  if(mob) mob.textContent = year;
   render();
 }
 
@@ -1620,7 +1672,15 @@ function exportForSharing() {
   const dataJson = JSON.stringify({ managers, bookings, nextId, nextMgrId });
 
   // Replace the DEFAULT_MANAGERS / DEFAULT_BOOKINGS block with current data
-  // We inject a <script> tag just before </body> that overwrites defaults on load
+  // We inject a <script> tag just before 
+<script id="baked-data">
+(function(){
+  var d = {"managers":[{"id":8,"name":"Alana Nugent","dept":"SMT","title":"","allowance":30,"unit":"days","workDays":[1,2,3,4,5]},{"id":9,"name":"Alison Crosbie","dept":"Finance","title":"","allowance":17,"unit":"days","workDays":[2,3,4]},{"id":10,"name":"Amanda Walsh","dept":"DCM","title":"","allowance":28,"unit":"days","workDays":[1,2,3,4,5]},{"id":11,"name":"Christopher Downes","dept":"SMT","title":"","allowance":28,"unit":"days","workDays":[1,2,3,4,5]},{"id":12,"name":"Emma Hanna","dept":"SMT","title":"","allowance":28,"unit":"days","workDays":[1,2,3,4,5]},{"id":13,"name":"Gulnaz Amjad","dept":"DCM","title":"","allowance":31,"unit":"days","workDays":[1,2,3,4,5]},{"id":14,"name":"Joanne Faulkner","dept":"SMT","title":"","allowance":112,"unit":"hours","workDays":[1,3,4]},{"id":15,"name":"Melissa Dempster","dept":"DCM","title":"","allowance":110.5,"unit":"hours","workDays":[1,2,4,5]},{"id":16,"name":"Roxanne Abel","dept":"SMT","title":"","allowance":32,"unit":"days","workDays":[1,2,3,4,5]},{"id":17,"name":"Susan Currie","dept":"","title":"","allowance":28,"unit":"days","workDays":[1,2,3,4,5]}],"bookings":[{"id":12,"mgr":8,"start":"2026-01-01","end":"2026-01-01","status":"approved","notes":""},{"id":13,"mgr":8,"start":"2026-01-15","end":"2026-01-16","status":"approved","notes":""},{"id":14,"mgr":8,"start":"2026-03-09","end":"2026-03-09","status":"approved","notes":"","customDuration":1},{"id":15,"mgr":8,"start":"2026-04-10","end":"2026-04-10","status":"approved","notes":"","customDuration":1},{"id":16,"mgr":8,"start":"2026-10-12","end":"2026-10-23","status":"approved","notes":"","customDuration":10},{"id":17,"mgr":9,"start":"2026-01-08","end":"2026-01-08","status":"approved","notes":"","customDuration":1},{"id":18,"mgr":9,"start":"2026-03-02","end":"2026-03-06","status":"approved","notes":"","customDuration":3},{"id":19,"mgr":8,"start":"2026-06-08","end":"2026-06-14","status":"approved","notes":"","customDuration":3},{"id":20,"mgr":9,"start":"2026-03-27","end":"2026-03-27","status":"approved","notes":"","customDuration":1},{"id":21,"mgr":10,"start":"2026-01-01","end":"2026-01-01","status":"approved","notes":"","customDuration":1},{"id":22,"mgr":10,"start":"2026-01-19","end":"2026-01-22","status":"approved","notes":"","customDuration":4},{"id":23,"mgr":10,"start":"2026-05-04","end":"2026-05-08","status":"approved","notes":"","customDuration":5},{"id":24,"mgr":10,"start":"2026-02-13","end":"2026-02-16","status":"approved","notes":"","customDuration":2},{"id":26,"mgr":10,"start":"2026-02-06","end":"2026-02-06","status":"approved","notes":"","customDuration":0.5},{"id":27,"mgr":10,"start":"2026-03-26","end":"2026-04-02","status":"approved","notes":"","customDuration":6},{"id":28,"mgr":10,"start":"2026-08-24","end":"2026-08-30","status":"approved","notes":"","customDuration":5},{"id":29,"mgr":11,"start":"2026-01-01","end":"2026-01-01","status":"approved","notes":"","customDuration":1},{"id":30,"mgr":11,"start":"2026-01-30","end":"2026-01-30","status":"approved","notes":"","customDuration":1},{"id":31,"mgr":11,"start":"2026-02-06","end":"2026-02-06","status":"approved","notes":"","customDuration":1},{"id":32,"mgr":11,"start":"2026-03-13","end":"2026-03-13","status":"approved","notes":"","customDuration":1},{"id":34,"mgr":11,"start":"2026-03-31","end":"2026-04-07","status":"approved","notes":"","customDuration":6},{"id":35,"mgr":12,"start":"2026-01-01","end":"2026-01-01","status":"approved","notes":"","customDuration":1},{"id":36,"mgr":12,"start":"2026-01-05","end":"2026-01-06","status":"approved","notes":"","customDuration":2},{"id":37,"mgr":12,"start":"2026-04-10","end":"2026-04-15","status":"approved","notes":"","customDuration":4},{"id":38,"mgr":12,"start":"2026-08-31","end":"2026-08-31","status":"approved","notes":"","customDuration":1},{"id":39,"mgr":12,"start":"2026-09-21","end":"2026-10-04","status":"approved","notes":"","customDuration":10},{"id":40,"mgr":12,"start":"2026-04-09","end":"2026-04-09","status":"approved","notes":"","customDuration":0.5},{"id":41,"mgr":13,"start":"2026-01-01","end":"2026-01-01","status":"approved","notes":"","customDuration":1},{"id":43,"mgr":13,"start":"2026-03-16","end":"2026-03-22","status":"approved","notes":"","customDuration":5},{"id":44,"mgr":13,"start":"2026-05-22","end":"2026-05-31","status":"approved","notes":"","customDuration":6},{"id":45,"mgr":13,"start":"2026-07-24","end":"2026-08-03","status":"approved","notes":"","customDuration":7},{"id":46,"mgr":13,"start":"2026-02-17","end":"2026-02-17","status":"approved","notes":"","customDuration":0.5},{"id":47,"mgr":13,"start":"2026-04-10","end":"2026-04-10","status":"approved","notes":"","customDuration":0.5},{"id":49,"mgr":13,"start":"2026-01-22","end":"2026-01-22","status":"approved","notes":"","customDuration":0.5},{"id":50,"mgr":14,"start":"2026-01-12","end":"2026-01-15","status":"approved","notes":"","customDuration":20},{"id":51,"mgr":14,"start":"2026-02-23","end":"2026-02-23","status":"approved","notes":"","customDuration":5},{"id":52,"mgr":15,"start":"2026-05-12","end":"2026-05-19","status":"approved","notes":"","customDuration":23},{"id":53,"mgr":15,"start":"2026-04-17","end":"2026-04-17","status":"approved","notes":"","customDuration":7.5},{"id":54,"mgr":15,"start":"2026-05-11","end":"2026-05-11","status":"approved","notes":"","customDuration":7.5},{"id":55,"mgr":15,"start":"2026-08-21","end":"2026-08-21","status":"approved","notes":"","customDuration":4},{"id":56,"mgr":15,"start":"2026-06-19","end":"2026-06-19","status":"approved","notes":"","customDuration":7.5},{"id":57,"mgr":15,"start":"2026-04-17","end":"2026-04-17","status":"approved","notes":"","customDuration":7.5},{"id":58,"mgr":15,"start":"2026-07-13","end":"2026-07-13","status":"approved","notes":"","customDuration":7.5},{"id":59,"mgr":15,"start":"2026-07-14","end":"2026-07-14","status":"approved","notes":"","customDuration":4},{"id":60,"mgr":16,"start":"2026-01-01","end":"2026-01-01","status":"approved","notes":"","customDuration":1},{"id":61,"mgr":16,"start":"2026-06-24","end":"2026-07-05","status":"approved","notes":"","customDuration":8},{"id":62,"mgr":16,"start":"2026-01-26","end":"2026-01-26","status":"approved","notes":"","customDuration":1},{"id":63,"mgr":16,"start":"2026-01-28","end":"2026-01-28","status":"approved","notes":"","customDuration":1},{"id":64,"mgr":16,"start":"2026-04-20","end":"2026-04-22","status":"approved","notes":"","customDuration":3},{"id":65,"mgr":16,"start":"2026-03-06","end":"2026-03-06","status":"approved","notes":"","customDuration":1},{"id":66,"mgr":17,"start":"2026-01-01","end":"2026-01-01","status":"approved","notes":"","customDuration":1},{"id":67,"mgr":17,"start":"2026-06-22","end":"2026-07-06","status":"approved","notes":"","customDuration":11},{"id":68,"mgr":17,"start":"2026-10-19","end":"2026-10-26","status":"approved","notes":"","customDuration":6},{"id":70,"mgr":17,"start":"2026-03-04","end":"2026-03-04","status":"approved","notes":"","customDuration":0.5},{"id":71,"mgr":17,"start":"2026-01-19","end":"2026-01-19","status":"approved","notes":"","customDuration":0.5},{"id":72,"mgr":17,"start":"2026-03-25","end":"2026-03-25","status":"approved","notes":"","customDuration":1},{"id":73,"mgr":17,"start":"2026-03-27","end":"2026-03-27","status":"approved","notes":"","customDuration":1}],"nextId":74,"nextMgrId":18};
+  // Override localStorage so loadData() picks it up immediately
+  try { localStorage.setItem('leavedesk_v1', JSON.stringify(d)); } catch(e){}
+})();
+</script>
+</body> that overwrites defaults on load
   const injectionScript = `
 <script id="baked-data">
 (function(){
@@ -1684,9 +1744,8 @@ document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{
 
 // ─── Init ─────────────────────────────────────────────────
 document.getElementById('sidebarYear').textContent = year;
-const _mye = document.getElementById('mobileYear');
-if(_mye) _mye.textContent = year;
-loadData().then(()=>{ render(); });
+render();
 </script>
-</body>
-</html>
+
+
+</body></html>
