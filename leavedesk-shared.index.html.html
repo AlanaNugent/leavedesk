@@ -1,0 +1,1751 @@
+<html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LeaveDesk — Manager Holiday Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&amp;family=DM+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F5F3EE;
+  --surface: #FFFFFF;
+  --surface2: #EDEAE3;
+  --border: rgba(0,0,0,0.08);
+  --border-med: rgba(0,0,0,0.14);
+  --text: #1A1916;
+  --text-muted: #7A7870;
+  --text-faint: #B0AEA7;
+  --accent: #2C5F2E;
+  --accent-light: #E8F0E8;
+  --amber: #C17B2A;
+  --amber-light: #FBF0E0;
+  --red: #B83232;
+  --red-light: #FCEAEA;
+  --blue: #2A5A8C;
+  --blue-light: #E6EEF7;
+  --pending: #C17B2A;
+  --pending-light: #FBF0E0;
+  --radius: 10px;
+  --radius-lg: 16px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+  --shadow-lg: 0 4px 24px rgba(0,0,0,0.1);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Layout */
+.app { display: flex; height: 100vh; overflow: hidden; }
+
+.sidebar {
+  width: 220px;
+  flex-shrink: 0;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  overflow-y: auto;
+}
+
+.main {
+  flex: 1;
+  overflow-y: auto;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Sidebar */
+.logo {
+  padding: 1.5rem 1.25rem 1rem;
+  border-bottom: 1px solid var(--border);
+}
+.logo-mark {
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  color: var(--text);
+}
+.logo-sub { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+
+.nav { padding: 1rem 0.75rem; flex: 1; }
+.nav-label { font-size: 10px; font-weight: 600; letter-spacing: 0.08em; color: var(--text-faint); text-transform: uppercase; padding: 0 0.5rem; margin-bottom: 0.4rem; margin-top: 1rem; }
+.nav-label:first-child { margin-top: 0; }
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13.5px;
+  color: var(--text-muted);
+  transition: all 0.15s;
+  margin-bottom: 1px;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+}
+.nav-item:hover { background: var(--surface2); color: var(--text); }
+.nav-item.active { background: var(--accent-light); color: var(--accent); font-weight: 500; }
+.nav-icon { width: 16px; height: 16px; flex-shrink: 0; opacity: 0.7; }
+.nav-item.active .nav-icon { opacity: 1; }
+
+.sidebar-footer {
+  padding: 1rem 0.75rem;
+  border-top: 1px solid var(--border);
+}
+.year-switcher {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--surface2);
+  border-radius: 8px;
+  padding: 6px 10px;
+}
+.year-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted);
+  font-size: 16px;
+  padding: 0 4px;
+  line-height: 1;
+}
+.year-btn:hover { color: var(--text); }
+.year-val { font-size: 14px; font-weight: 500; font-family: 'DM Mono', monospace; }
+
+/* Page header */
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.page-title { font-size: 22px; font-weight: 600; letter-spacing: -0.3px; }
+.page-sub { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+.header-actions { display: flex; gap: 8px; flex-shrink: 0; }
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: var(--radius);
+  font-size: 13.5px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover { background: #224A24; }
+.btn-secondary { background: var(--surface); color: var(--text); border-color: var(--border-med); }
+.btn-secondary:hover { background: var(--surface2); }
+.btn-ghost { background: none; color: var(--text-muted); border-color: transparent; }
+.btn-ghost:hover { background: var(--surface2); color: var(--text); }
+.btn-danger { background: var(--red-light); color: var(--red); border: none; }
+.btn-danger:hover { background: #f5d5d5; }
+.btn-sm { padding: 5px 10px; font-size: 12px; }
+
+/* Stats cards */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+}
+.stat-card {
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  border: 1px solid var(--border);
+}
+.stat-label { font-size: 12px; color: var(--text-muted); margin-bottom: 6px; }
+.stat-value { font-size: 26px; font-weight: 600; letter-spacing: -0.5px; line-height: 1; }
+.stat-sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+.stat-card.accent { background: var(--accent); border-color: transparent; }
+.stat-card.accent .stat-label, .stat-card.accent .stat-sub { color: rgba(255,255,255,0.65); }
+.stat-card.accent .stat-value { color: #fff; }
+
+/* Table card */
+.card {
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+.card-header {
+  padding: 1.1rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.card-title { font-size: 14px; font-weight: 600; }
+
+/* Table */
+table { width: 100%; border-collapse: collapse; }
+thead th {
+  text-align: left;
+  padding: 10px 16px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+tbody tr { transition: background 0.1s; }
+tbody tr:hover { background: var(--bg); }
+tbody td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  font-size: 13.5px;
+  vertical-align: middle;
+}
+tbody tr:last-child td { border-bottom: none; }
+
+/* Avatar */
+.avatar {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+.person-cell { display: flex; align-items: center; gap: 10px; }
+.person-name { font-weight: 500; font-size: 13.5px; }
+.person-email { font-size: 11.5px; color: var(--text-muted); }
+
+/* Progress */
+.progress-wrap { display: flex; align-items: center; gap: 8px; }
+.progress-bar {
+  width: 90px; height: 6px;
+  background: var(--surface2);
+  border-radius: 3px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.progress-fill { height: 100%; border-radius: 3px; transition: width 0.4s; }
+.progress-text { font-size: 12px; font-family: 'DM Mono', monospace; color: var(--text-muted); white-space: nowrap; }
+
+/* Badge */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 9px;
+  border-radius: 20px;
+  font-size: 11.5px;
+  font-weight: 500;
+  gap: 4px;
+}
+.badge-green { background: var(--accent-light); color: var(--accent); }
+.badge-amber { background: var(--amber-light); color: var(--amber); }
+.badge-red { background: var(--red-light); color: var(--red); }
+.badge-blue { background: var(--blue-light); color: var(--blue); }
+.badge-gray { background: var(--surface2); color: var(--text-muted); }
+.dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; display: inline-block; }
+
+/* Calendar */
+.cal-wrap { overflow-x: auto; padding: 0; }
+.cal-table { border-collapse: collapse; min-width: 900px; width: 100%; }
+.cal-table .mgr-col { width: 160px; min-width: 160px; }
+.cal-table th {
+  text-align: center;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  padding: 8px 2px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+.cal-table th.mgr-hdr {
+  text-align: left;
+  padding: 8px 16px;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+.cal-table td { padding: 2px 1px; border-bottom: 1px solid var(--border); }
+.cal-table td.mgr-name-cell {
+  padding: 8px 16px;
+  border-right: 1px solid var(--border);
+  min-width: 160px;
+}
+.cal-table tr:last-child td { border-bottom: none; }
+.cal-day {
+  width: 12px; height: 28px;
+  border-radius: 2px;
+  display: block;
+  margin: 0 0.5px;
+}
+.cal-day.approved { background: var(--accent); border-radius: 2px; }
+.cal-day.pending { background: var(--amber); border-radius: 2px; opacity: 0.6; }
+.cal-day.weekend { background: var(--surface2); }
+.cal-day.today-col { outline: 1.5px solid var(--accent); outline-offset: -1px; border-radius: 2px; }
+.month-sep { border-left: 1px solid var(--border-med) !important; }
+
+/* Month headers */
+.month-label-row th { background: var(--surface); border-bottom: 1px solid var(--border); }
+.month-label { font-size: 12px; font-weight: 600; color: var(--text-muted); text-align: left; padding: 6px 4px !important; letter-spacing: 0; text-transform: none; }
+
+/* Bookings list */
+.booking-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.booking-item:last-child { border-bottom: none; }
+.booking-color { width: 3px; height: 36px; border-radius: 2px; flex-shrink: 0; }
+.booking-info { flex: 1; min-width: 0; }
+.booking-name { font-weight: 500; font-size: 13.5px; }
+.booking-dates { font-size: 12px; color: var(--text-muted); margin-top: 1px; font-family: 'DM Mono', monospace; }
+.booking-days { font-size: 12px; color: var(--text-muted); margin-left: auto; font-family: 'DM Mono', monospace; flex-shrink: 0; }
+
+/* Modal */
+.overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(26,25,22,0.35);
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+.overlay.open { display: flex; }
+.modal {
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  width: 100%;
+  max-width: 440px;
+  box-shadow: var(--shadow-lg);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+.modal h3 { font-size: 17px; font-weight: 600; margin-bottom: 1.5rem; letter-spacing: -0.2px; }
+.form-row { margin-bottom: 1rem; }
+.form-label { display: block; font-size: 12px; font-weight: 500; color: var(--text-muted); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.04em; }
+.form-input, .form-select {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid var(--border-med);
+  border-radius: var(--radius);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13.5px;
+  background: var(--surface);
+  color: var(--text);
+  transition: border-color 0.15s;
+}
+.form-input:focus, .form-select:focus { outline: none; border-color: var(--accent); }
+.form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+.form-hint { font-size: 11.5px; color: var(--text-muted); margin-top: 4px; }
+
+/* Alerts */
+.conflict-warning {
+  background: var(--amber-light);
+  border: 1px solid rgba(193,123,42,0.2);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  font-size: 12.5px;
+  color: var(--amber);
+  margin-top: 8px;
+  display: none;
+}
+.conflict-warning.show { display: block; }
+
+/* Search */
+.search-input {
+  padding: 7px 12px;
+  border: 1px solid var(--border-med);
+  border-radius: var(--radius);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  background: var(--surface);
+  color: var(--text);
+  width: 200px;
+}
+.search-input:focus { outline: none; border-color: var(--accent); }
+
+/* Filter pills */
+.filter-row { display: flex; gap: 6px; flex-wrap: wrap; }
+.pill {
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid var(--border-med);
+  background: var(--surface);
+  color: var(--text-muted);
+  transition: all 0.15s;
+}
+.pill.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+.pill:hover:not(.active) { background: var(--surface2); color: var(--text); }
+
+/* Empty state */
+.empty-state {
+  text-align: center;
+  padding: 3rem 2rem;
+  color: var(--text-muted);
+}
+.empty-icon { font-size: 32px; margin-bottom: 1rem; opacity: 0.4; }
+.empty-title { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+.empty-sub { font-size: 13px; }
+
+/* Action menu */
+.actions-cell { display: flex; gap: 4px; opacity: 0; transition: opacity 0.15s; }
+tbody tr:hover .actions-cell { opacity: 1; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .sidebar { display: none; }
+  .main { padding: 1rem; }
+  .stats-grid { grid-template-columns: 1fr 1fr; }
+}
+
+/* Tabs */
+.view-tabs { display: flex; gap: 0; background: var(--surface2); border-radius: var(--radius); padding: 3px; }
+.view-tab {
+  padding: 6px 14px;
+  border-radius: 7px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: var(--text-muted);
+  transition: all 0.15s;
+}
+.view-tab.active { background: var(--surface); color: var(--text); box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: var(--text);
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: var(--radius);
+  font-size: 13.5px;
+  font-weight: 500;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: all 0.25s;
+  z-index: 500;
+  pointer-events: none;
+}
+.toast.show { opacity: 1; transform: translateY(0); }
+
+/* Dept filter */
+.dept-tag {
+  font-size: 12px;
+  color: var(--text-muted);
+  background: var(--surface2);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-med); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="logo">
+      <div class="logo-mark">🌿 LeaveDesk</div>
+      <div class="logo-sub">Manager Holiday Tracker</div>
+    </div>
+    <div class="nav">
+      <div class="nav-label">Overview</div>
+      <button class="nav-item active" onclick="showPage('dashboard')">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="6" height="6" rx="1.5" fill="currentColor" opacity=".8"></rect><rect x="9" y="1" width="6" height="6" rx="1.5" fill="currentColor" opacity=".5"></rect><rect x="1" y="9" width="6" height="6" rx="1.5" fill="currentColor" opacity=".5"></rect><rect x="9" y="9" width="6" height="6" rx="1.5" fill="currentColor" opacity=".3"></rect></svg>
+        Dashboard
+      </button>
+      <button class="nav-item" onclick="showPage('calendar')">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none"><rect x="1.5" y="3" width="13" height="11" rx="2" stroke="currentColor" stroke-width="1.5"></rect><path d="M5 1.5V4M11 1.5V4M1.5 7h13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path></svg>
+        Calendar
+      </button>
+      <button class="nav-item" onclick="showPage('bookings')">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none"><path d="M3 4h10M3 8h7M3 12h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path></svg>
+        All Requests
+      </button>
+
+      <div class="nav-label">Admin</div>
+      <button class="nav-item" onclick="showPage('managers')">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none"><circle cx="6" cy="5" r="3" fill="currentColor" opacity=".8"></circle><path d="M1 13c0-2.761 2.239-5 5-5s5 2.239 5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity=".8"></path><circle cx="12" cy="5" r="2" fill="currentColor" opacity=".5"></circle><path d="M14 13c0-1.657-.895-3-2-3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity=".5"></path></svg>
+        Managers
+      </button>
+      <button class="nav-item" onclick="openAddManager()">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="6" r="3.5" stroke="currentColor" stroke-width="1.5"></circle><path d="M2 14c0-2.5 2-4.5 5-4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path><path d="M12 10v4M10 12h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path></svg>
+        Add Manager
+      </button>
+
+      <div class="nav-label">Request</div>
+      <button class="nav-item" onclick="openRequestModal()">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none"><rect x="1.5" y="3" width="13" height="11" rx="2" stroke="currentColor" stroke-width="1.5"></rect><path d="M5 1.5V4M11 1.5V4M8 7v4M6 9h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path></svg>
+        Request Holiday
+      </button>
+    </div>
+    <div class="sidebar-footer">
+      <div class="year-switcher">
+        <button class="year-btn" onclick="changeYear(-1)">‹</button>
+        <span class="year-val" id="sidebarYear">2026</span>
+        <button class="year-btn" onclick="changeYear(1)">›</button>
+      </div>
+      <button onclick="exportForSharing()" style="width: 100%; margin-top: 8px; padding: 7px; background: rgb(34, 74, 36); border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; font-size: 12px; color: rgb(255, 255, 255); cursor: pointer; border-radius: 6px; font-family: &quot;DM Sans&quot;, sans-serif; font-weight: 500;" onmouseover="this.style.background='#224A24'" onmouseout="this.style.background='#2C5F2E'">⇓ Export for sharing</button>
+      <button onclick="clearAllData()" style="width: 100%; margin-top: 6px; padding: 6px; background: none; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; font-size: 11px; color: var(--text-faint); cursor: pointer; border-radius: 6px; font-family: &quot;DM Sans&quot;, sans-serif;" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--text-faint)'">↺ Reset to demo data</button>
+    </div>
+  </nav>
+
+  <!-- Main content -->
+  <main class="main" id="mainContent">
+  <div class="page-header">
+    <div>
+      <div class="page-title">Dashboard</div>
+      <div class="page-sub">2026 overview — Alana, Alison, Amanda, Christopher, Emma, Gulnaz, Joanne, Melissa, Roxanne, Susan</div>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-secondary" onclick="openRequestModal()">+ Request Holiday</button>
+      <button class="btn btn-primary" onclick="openAddManager()">+ Add Manager</button>
+    </div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card accent">
+      <div class="stat-label">Managers tracked</div>
+      <div class="stat-value">10</div>
+      <div class="stat-sub">across 4 departments</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Off today</div>
+      <div class="stat-value" style="color:var(--amber)">1</div>
+      <div class="stat-sub">manager(s) on leave</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Avg days taken (2026)</div>
+      <div class="stat-value">15</div>
+      <div class="stat-sub">out of avg 44 allowance</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Pending approvals</div>
+      <div class="stat-value" style="color:var(--text)">0</div>
+      <div class="stat-sub">bookings awaiting approval</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Low allowance alerts</div>
+      <div class="stat-value" style="color:var(--red)">1</div>
+      <div class="stat-sub">managers with &lt;5 days left</div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;flex-wrap:wrap;">
+    <div class="card" style="min-width:280px">
+      <div class="card-header">
+        <span class="card-title">Allowance overview</span>
+        <span style="font-size:12px;color:var(--text-muted)">2026</span>
+      </div>
+      <div style="padding:0">
+        <div style="padding:12px 16px;border-bottom:1px solid var(--border);">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+              <div class="avatar" style="background:#2C5F2E;color:#E8F0E8;width:26px;height:26px;font-size:10px;">AN</div>
+              <span style="font-weight:500;font-size:13px;flex:1">Alana</span>
+              <span style="font-size:12px;font-family:'DM Mono',monospace;color:var(--text-muted)">18/30day</span>
+              
+            </div>
+            <div class="progress-bar" style="width:100%;height:8px;">
+              <div class="progress-fill" style="width:60%;background:#2C5F2E;"></div>
+            </div>
+          </div><div style="padding:12px 16px;border-bottom:1px solid var(--border);">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+              <div class="avatar" style="background:#2A5A8C;color:#E6EEF7;width:26px;height:26px;font-size:10px;">AC</div>
+              <span style="font-weight:500;font-size:13px;flex:1">Alison</span>
+              <span style="font-size:12px;font-family:'DM Mono',monospace;color:var(--text-muted)">5/17day</span>
+              
+            </div>
+            <div class="progress-bar" style="width:100%;height:8px;">
+              <div class="progress-fill" style="width:29%;background:#2A5A8C;"></div>
+            </div>
+          </div><div style="padding:12px 16px;border-bottom:1px solid var(--border);">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+              <div class="avatar" style="background:#7C3D6E;color:#F5EAF2;width:26px;height:26px;font-size:10px;">AW</div>
+              <span style="font-weight:500;font-size:13px;flex:1">Amanda</span>
+              <span style="font-size:12px;font-family:'DM Mono',monospace;color:var(--text-muted)">23.5/28day</span>
+              <span class="badge badge-red" style="font-size:10px;">4.5day left</span>
+            </div>
+            <div class="progress-bar" style="width:100%;height:8px;">
+              <div class="progress-fill" style="width:84%;background:var(--amber);"></div>
+            </div>
+          </div><div style="padding:12px 16px;border-bottom:1px solid var(--border);">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+              <div class="avatar" style="background:#8C5C2A;color:#F7EEDF;width:26px;height:26px;font-size:10px;">CD</div>
+              <span style="font-weight:500;font-size:13px;flex:1">Christopher</span>
+              <span style="font-size:12px;font-family:'DM Mono',monospace;color:var(--text-muted)">10/28day</span>
+              
+            </div>
+            <div class="progress-bar" style="width:100%;height:8px;">
+              <div class="progress-fill" style="width:36%;background:#8C5C2A;"></div>
+            </div>
+          </div><div style="padding:12px 16px;border-bottom:1px solid var(--border);">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+              <div class="avatar" style="background:#3D6B6B;color:#E0F0F0;width:26px;height:26px;font-size:10px;">EH</div>
+              <span style="font-weight:500;font-size:13px;flex:1">Emma</span>
+              <span style="font-size:12px;font-family:'DM Mono',monospace;color:var(--text-muted)">18.5/28day</span>
+              
+            </div>
+            <div class="progress-bar" style="width:100%;height:8px;">
+              <div class="progress-fill" style="width:66%;background:var(--amber);"></div>
+            </div>
+          </div><div style="padding:12px 16px;border-bottom:1px solid var(--border);">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+              <div class="avatar" style="background:#5E3D8C;color:#EDE6F7;width:26px;height:26px;font-size:10px;">GA</div>
+              <span style="font-weight:500;font-size:13px;flex:1">Gulnaz</span>
+              <span style="font-size:12px;font-family:'DM Mono',monospace;color:var(--text-muted)">20.5/31day</span>
+              
+            </div>
+            <div class="progress-bar" style="width:100%;height:8px;">
+              <div class="progress-fill" style="width:66%;background:var(--amber);"></div>
+            </div>
+          </div><div style="padding:12px 16px;border-bottom:1px solid var(--border);">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+              <div class="avatar" style="background:#6B3D3D;color:#F7E8E8;width:26px;height:26px;font-size:10px;">JF</div>
+              <span style="font-weight:500;font-size:13px;flex:1">Joanne</span>
+              <span style="font-size:12px;font-family:'DM Mono',monospace;color:var(--text-muted)">25/112hr</span>
+              
+            </div>
+            <div class="progress-bar" style="width:100%;height:8px;">
+              <div class="progress-fill" style="width:22%;background:#6B3D3D;"></div>
+            </div>
+          </div><div style="padding:12px 16px;border-bottom:1px solid var(--border);">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+              <div class="avatar" style="background:#3D6B3D;color:#E0F0E0;width:26px;height:26px;font-size:10px;">MD</div>
+              <span style="font-weight:500;font-size:13px;flex:1">Melissa</span>
+              <span style="font-size:12px;font-family:'DM Mono',monospace;color:var(--text-muted)">68.5/110.5hr</span>
+              
+            </div>
+            <div class="progress-bar" style="width:100%;height:8px;">
+              <div class="progress-fill" style="width:62%;background:var(--amber);"></div>
+            </div>
+          </div><div style="padding:12px 16px;border-bottom:1px solid var(--border);">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+              <div class="avatar" style="background:#2C5F2E;color:#E8F0E8;width:26px;height:26px;font-size:10px;">RA</div>
+              <span style="font-weight:500;font-size:13px;flex:1">Roxanne</span>
+              <span style="font-size:12px;font-family:'DM Mono',monospace;color:var(--text-muted)">15/32day</span>
+              
+            </div>
+            <div class="progress-bar" style="width:100%;height:8px;">
+              <div class="progress-fill" style="width:47%;background:#2C5F2E;"></div>
+            </div>
+          </div><div style="padding:12px 16px;border-bottom:1px solid var(--border);">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+              <div class="avatar" style="background:#2A5A8C;color:#E6EEF7;width:26px;height:26px;font-size:10px;">SC</div>
+              <span style="font-weight:500;font-size:13px;flex:1">Susan</span>
+              <span style="font-size:12px;font-family:'DM Mono',monospace;color:var(--text-muted)">21/28day</span>
+              
+            </div>
+            <div class="progress-bar" style="width:100%;height:8px;">
+              <div class="progress-fill" style="width:75%;background:var(--amber);"></div>
+            </div>
+          </div>
+      </div>
+    </div>
+
+    <div class="card" style="min-width:280px">
+      <div class="card-header">
+        <span class="card-title">Upcoming leave</span>
+        <button class="btn btn-ghost btn-sm" onclick="showPage('bookings')">View all requests</button>
+      </div>
+      <div>
+        
+        <div class="booking-item">
+            <div class="booking-color" style="background:#2C5F2E"></div>
+            <div class="booking-info">
+              <div class="booking-name">Roxanne Abel</div>
+              <div class="booking-dates">20 Apr 2026 → 22 Apr 2026</div>
+              
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
+              <span style="font-size:12px;font-family:'DM Mono',monospace;color:var(--text-muted)">3 days</span>
+              <span class="badge badge-green" style="font-size:10px;">approved</span>
+            </div>
+          </div><div class="booking-item">
+            <div class="booking-color" style="background:#7C3D6E"></div>
+            <div class="booking-info">
+              <div class="booking-name">Amanda Walsh</div>
+              <div class="booking-dates">4 May 2026 → 8 May 2026</div>
+              
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
+              <span style="font-size:12px;font-family:'DM Mono',monospace;color:var(--text-muted)">5 days</span>
+              <span class="badge badge-green" style="font-size:10px;">approved</span>
+            </div>
+          </div><div class="booking-item">
+            <div class="booking-color" style="background:#3D6B3D"></div>
+            <div class="booking-info">
+              <div class="booking-name">Melissa Dempster</div>
+              <div class="booking-dates">11 May 2026 → 11 May 2026</div>
+              
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
+              <span style="font-size:12px;font-family:'DM Mono',monospace;color:var(--text-muted)">7.5 hrs</span>
+              <span class="badge badge-green" style="font-size:10px;">approved</span>
+            </div>
+          </div><div class="booking-item">
+            <div class="booking-color" style="background:#3D6B3D"></div>
+            <div class="booking-info">
+              <div class="booking-name">Melissa Dempster</div>
+              <div class="booking-dates">12 May 2026 → 19 May 2026</div>
+              
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
+              <span style="font-size:12px;font-family:'DM Mono',monospace;color:var(--text-muted)">23 hrs</span>
+              <span class="badge badge-green" style="font-size:10px;">approved</span>
+            </div>
+          </div><div class="booking-item">
+            <div class="booking-color" style="background:#5E3D8C"></div>
+            <div class="booking-info">
+              <div class="booking-name">Gulnaz Amjad</div>
+              <div class="booking-dates">22 May 2026 → 31 May 2026</div>
+              
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
+              <span style="font-size:12px;font-family:'DM Mono',monospace;color:var(--text-muted)">6 days</span>
+              <span class="badge badge-green" style="font-size:10px;">approved</span>
+            </div>
+          </div>
+      </div>
+    </div>
+  </div></main>
+</div>
+
+<!-- Modals -->
+<div class="overlay" id="managerModal">
+  <div class="modal">
+    <h3 id="managerModalTitle">Add Manager</h3>
+    <input type="hidden" id="editMgrId">
+    <div class="form-row">
+      <label class="form-label">Full Name</label>
+      <input class="form-input" id="mgrName" type="text" placeholder="e.g. Sarah Johnson">
+    </div>
+    <div class="form-row-2">
+      <div class="form-row" style="margin:0">
+        <label class="form-label">Department</label>
+        <input class="form-input" id="mgrDept" type="text" placeholder="e.g. Engineering">
+      </div>
+      <div class="form-row" style="margin:0">
+        <label class="form-label">Job Title</label>
+        <input class="form-input" id="mgrTitle" type="text" placeholder="e.g. Head of Eng">
+      </div>
+    </div>
+    <div class="form-row">
+      <label class="form-label">Annual Holiday Allowance</label>
+      <div style="display:grid;grid-template-columns:1fr auto;gap:8px;">
+        <input class="form-input" id="mgrAllowance" type="number" value="25" min="1" max="9999">
+        <select class="form-select" id="mgrUnit" style="width:90px;">
+          <option value="days">Days</option>
+          <option value="hours">Hours</option>
+        </select>
+      </div>
+      <div class="form-hint">Working days only, excluding weekends. 1 day = 8 hours.</div>
+    </div>
+    <div class="form-row">
+      <label class="form-label">Working Days</label>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:2px;">
+        <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;padding:5px 10px;border:1px solid var(--border-med);border-radius:6px;"><input type="checkbox" id="wd1" value="1"> Mon</label>
+        <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;padding:5px 10px;border:1px solid var(--border-med);border-radius:6px;"><input type="checkbox" id="wd2" value="2"> Tue</label>
+        <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;padding:5px 10px;border:1px solid var(--border-med);border-radius:6px;"><input type="checkbox" id="wd3" value="3"> Wed</label>
+        <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;padding:5px 10px;border:1px solid var(--border-med);border-radius:6px;"><input type="checkbox" id="wd4" value="4"> Thu</label>
+        <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;padding:5px 10px;border:1px solid var(--border-med);border-radius:6px;"><input type="checkbox" id="wd5" value="5"> Fri</label>
+        <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;padding:5px 10px;border:1px solid var(--border-med);border-radius:6px;"><input type="checkbox" id="wd6" value="6"> Sat</label>
+      </div>
+      <div class="form-hint">Select the days this person works each week.</div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('managerModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveManager()">Save Manager</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="bookingModal">
+  <div class="modal">
+    <h3 id="bookingModalTitle">Request Holiday</h3>
+    <input type="hidden" id="editBookingId">
+    <div class="form-row">
+      <label class="form-label">Your Name</label>
+      <select class="form-select" id="bookMgr" onchange="checkConflict()"></select>
+    </div>
+    <div id="worksOnInfo" style="display:none;font-size:12px;color:var(--text-muted);margin:-6px 0 10px;padding:6px 10px;background:var(--surface2);border-radius:6px;"></div>
+    <div class="form-row-2">
+      <div class="form-row" style="margin:0">
+        <label class="form-label">Start Date</label>
+        <input class="form-input" id="bookStart" type="date" onchange="checkConflict()">
+      </div>
+      <div class="form-row" style="margin:0">
+        <label class="form-label">End Date</label>
+        <input class="form-input" id="bookEnd" type="date" onchange="checkConflict()">
+      </div>
+    </div>
+    <div id="dayPreview" style="display:none;background:var(--accent-light);border-radius:var(--radius);padding:9px 14px;font-size:13px;color:var(--accent);margin-bottom:8px;"></div>
+    <div class="form-row">
+      <label class="form-label" style="display:flex;align-items:center;justify-content:space-between;">
+        <span>Duration</span>
+        <span id="durationAutoLabel" style="font-size:11px;color:var(--text-faint);font-weight:400;letter-spacing:0;">auto-calculated from dates</span>
+      </label>
+      <div style="display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;">
+        <input class="form-input" id="bookDuration" type="number" min="0.5" step="0.5" placeholder="e.g. 3" oninput="onDurationEdit()">
+        <span id="bookDurationUnit" style="font-size:13px;color:var(--text-muted);min-width:36px;"></span>
+      </div>
+      <div class="form-hint">Auto-filled from your dates — edit if your hours vary day to day.</div>
+    </div>
+    <div class="form-row">
+      <label class="form-label">Reason / Notes (optional)</label>
+      <input class="form-input" id="bookNotes" type="text" placeholder="e.g. Family holiday">
+    </div>
+    <div class="conflict-warning" id="conflictWarn"></div>
+    <div style="background:var(--blue-light);border-radius:var(--radius);padding:10px 14px;font-size:12.5px;color:var(--blue);margin-top:8px;">
+      ✉ Your request will be sent to <strong>Alana Nugent</strong> for approval by email.
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('bookingModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveBooking()">Submit Request</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── Data ────────────────────────────────────────────────
+const PALETTES = [
+  { bg: '#2C5F2E', text: '#E8F0E8' },
+  { bg: '#2A5A8C', text: '#E6EEF7' },
+  { bg: '#7C3D6E', text: '#F5EAF2' },
+  { bg: '#8C5C2A', text: '#F7EEDF' },
+  { bg: '#3D6B6B', text: '#E0F0F0' },
+  { bg: '#5E3D8C', text: '#EDE6F7' },
+  { bg: '#6B3D3D', text: '#F7E8E8' },
+  { bg: '#3D6B3D', text: '#E0F0E0' },
+];
+
+let year = new Date().getFullYear();
+let currentPage = 'dashboard';
+let filterDept = 'all';
+let filterStatus = 'all';
+let searchQ = '';
+
+const DEFAULT_MANAGERS = [
+  { id:1, name:'Sarah Johnson', dept:'Engineering', title:'Head of Engineering', allowance:25, unit:'days', workDays:[1,2,3,4,5] },
+  { id:2, name:'Mark Davies', dept:'Sales', title:'Sales Director', allowance:224, unit:'hours', workDays:[1,2,3,4,5] },
+  { id:3, name:'Priya Patel', dept:'Marketing', title:'Marketing Manager', allowance:25, unit:'days', workDays:[1,2,3] },
+  { id:4, name:'Tom Williams', dept:'Operations', title:'Operations Lead', allowance:200, unit:'hours', workDays:[1,2,3,4,5] },
+  { id:5, name:'Alice Chen', dept:'Finance', title:'Finance Manager', allowance:25, unit:'days', workDays:[1,2,3,4,5] },
+];
+const DEFAULT_BOOKINGS = [
+  { id:1, mgr:1, start:'2026-01-05', end:'2026-01-09', status:'approved', notes:'New Year break' },
+  { id:2, mgr:1, start:'2026-07-20', end:'2026-07-31', status:'approved', notes:'Summer holiday' },
+  { id:3, mgr:2, start:'2026-03-16', end:'2026-03-20', status:'approved', notes:'' },
+  { id:4, mgr:2, start:'2026-08-03', end:'2026-08-07', status:'pending', notes:'Family holiday' },
+  { id:5, mgr:3, start:'2026-05-25', end:'2026-05-29', status:'approved', notes:'Bank holiday week' },
+  { id:6, mgr:3, start:'2026-09-07', end:'2026-09-11', status:'approved', notes:'' },
+  { id:7, mgr:4, start:'2026-06-15', end:'2026-06-19', status:'approved', notes:'' },
+  { id:8, mgr:4, start:'2026-12-21', end:'2026-12-31', status:'pending', notes:'Christmas' },
+  { id:9, mgr:5, start:'2026-04-06', end:'2026-04-10', status:'approved', notes:'Easter' },
+  { id:10, mgr:5, start:'2026-08-24', end:'2026-08-28', status:'approved', notes:'' },
+];
+
+function loadData() {
+  try {
+    const saved = localStorage.getItem('leavedesk_v1');
+    if (saved) {
+      const d = JSON.parse(saved);
+      managers = d.managers || DEFAULT_MANAGERS;
+      bookings = d.bookings || DEFAULT_BOOKINGS;
+      nextMgrId = d.nextMgrId || (Math.max(0,...managers.map(m=>m.id))+1);
+      nextId = d.nextId || (Math.max(0,...bookings.map(b=>b.id))+1);
+      return;
+    }
+  } catch(e) {}
+  managers = JSON.parse(JSON.stringify(DEFAULT_MANAGERS));
+  bookings = JSON.parse(JSON.stringify(DEFAULT_BOOKINGS));
+  nextId = 11; nextMgrId = 6;
+}
+
+function saveData() {
+  try {
+    localStorage.setItem('leavedesk_v1', JSON.stringify({managers, bookings, nextId, nextMgrId}));
+  } catch(e) {}
+}
+
+let managers, bookings, nextId, nextMgrId;
+loadData();
+
+// ─── Utils ───────────────────────────────────────────────
+function initials(name) { return name.trim().split(/\s+/).map(w=>w[0]).join('').toUpperCase().slice(0,2); }
+function palette(idx) { return PALETTES[idx % PALETTES.length]; }
+function isWeekend(d) { const day = new Date(d+'T12:00:00').getDay(); return day===0||day===6; }
+// Generic workdays (Mon-Fri) — used for calendar display
+function workdays(s, e) {
+  let count=0, cur=new Date(s+'T12:00:00'), end=new Date(e+'T12:00:00');
+  while(cur<=end){ if(!isWeekend(cur.toISOString().slice(0,10))) count++; cur.setDate(cur.getDate()+1); }
+  return count;
+}
+// Manager-specific working days — respects their schedule (e.g. Mon/Wed/Fri only)
+function mgrWorkdays(s, e, mgr) {
+  const wd = mgr.workDays || [1,2,3,4,5];
+  let count=0, cur=new Date(s+'T12:00:00'), end=new Date(e+'T12:00:00');
+  while(cur<=end){ if(wd.includes(cur.getDay())) count++; cur.setDate(cur.getDate()+1); }
+  return count;
+}
+function workdayLabel(wd) {
+  const names = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  return (wd||[1,2,3,4,5]).map(d=>names[d]).join(', ');
+}
+function mgrIdx(id) { return managers.findIndex(m=>m.id===id); }
+function mgrBookings(mgrId, yr, status) {
+  return bookings.filter(b => b.mgr===mgrId && b.start.startsWith(yr+'') && (!status || b.status===status));
+}
+// Hours per working day (standard 8h day)
+const HRS_PER_DAY = 8;
+function unitLabel(m, plural) {
+  return m.unit==='hours' ? (plural===false?'hr':'hrs') : (plural===false?'day':'days');
+}
+function takenInUnit(mgrId, yr, mgr) {
+  const m = mgr || managers.find(x=>x.id===mgrId);
+  const taken = mgrBookings(mgrId,yr,'approved').reduce((s,b)=>{
+    if(b.customDuration != null) {
+      // custom duration stored directly in the manager's unit
+      return s + b.customDuration;
+    }
+    const days = mgrWorkdays(b.start,b.end,m);
+    return s + (m.unit==='hours' ? days*HRS_PER_DAY : days);
+  }, 0);
+  return Math.round(taken * 10) / 10;
+}
+function daysTaken(mgrId, yr) {
+  const m = managers.find(x=>x.id===mgrId);
+  return mgrBookings(mgrId,yr,'approved').reduce((s,b)=>s+mgrWorkdays(b.start,b.end,m),0);
+}
+function fmtAllowance(m) { return `${m.allowance} ${unitLabel(m)}`; }
+function fmtTaken(mgrId, yr) {
+  const m = managers.find(x=>x.id===mgrId);
+  return `${takenInUnit(mgrId,yr,m)} ${unitLabel(m)}`;
+}
+function fmtRemaining(mgrId, yr) {
+  const m = managers.find(x=>x.id===mgrId);
+  const t = takenInUnit(mgrId,yr,m);
+  return m.allowance - t;
+}
+// Low threshold: <5 days or <40 hours
+function isLow(m, yr) {
+  const rem = fmtRemaining(m.id, yr);
+  return m.unit==='hours' ? rem < 40 : rem < 5;
+}
+function fmt(dateStr) {
+  const d = new Date(dateStr+'T12:00:00');
+  return d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+}
+function today() { return new Date().toISOString().slice(0,10); }
+function isOnLeave(mgrId) {
+  const t = today();
+  return bookings.some(b=>b.mgr===mgrId&&b.start<=t&&b.end>=t&&b.status==='approved');
+}
+
+function bookingDuration(b, mgr) {
+  const autoDays = mgrWorkdays(b.start, b.end, mgr);
+  const autoVal = mgr.unit==='hours' ? autoDays*HRS_PER_DAY : autoDays;
+  const dur = b.customDuration != null ? b.customDuration : autoVal;
+  return { val: dur, label: `${dur} ${unitLabel(mgr, dur!==1)}`, custom: b.customDuration != null };
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2400);
+}
+
+// ─── Routing ─────────────────────────────────────────────
+function showPage(page) {
+  currentPage = page;
+  document.querySelectorAll('.nav-item').forEach(el=>{
+    const onclick = el.getAttribute('onclick')||'';
+    el.classList.toggle('active', onclick.includes(`'${page}'`));
+  });
+  render();
+}
+
+function changeYear(dir) {
+  year += dir;
+  document.getElementById('sidebarYear').textContent = year;
+  render();
+}
+
+// ─── Render dispatcher ───────────────────────────────────
+function render() {
+  const main = document.getElementById('mainContent');
+  if (currentPage==='dashboard') main.innerHTML = renderDashboard();
+  else if (currentPage==='managers') main.innerHTML = renderManagers();
+  else if (currentPage==='calendar') main.innerHTML = renderCalendar();
+  else if (currentPage==='bookings') main.innerHTML = renderBookings();
+}
+
+// ─── Dashboard ───────────────────────────────────────────
+function renderDashboard() {
+  const totalMgrs = managers.length;
+  const onLeave = managers.filter(m=>isOnLeave(m.id)).length;
+  const totalDaysTaken = managers.reduce((s,m)=>s+daysTaken(m.id,year),0);
+  const avgTaken = totalMgrs ? Math.round(totalDaysTaken/totalMgrs) : 0;
+  const lowAlert = managers.filter(m=>isLow(m,year)).length;
+  const pending = bookings.filter(b=>b.status==='pending'&&b.start.startsWith(year+'')).length;
+
+  // Upcoming bookings (next 60 days)
+  const t = today();
+  const future = new Date(); future.setDate(future.getDate()+60);
+  const futureStr = future.toISOString().slice(0,10);
+  const upcoming = bookings
+    .filter(b=>b.end>=t&&b.start<=futureStr)
+    .sort((a,b)=>a.start.localeCompare(b.start))
+    .slice(0,5);
+
+  return `
+  <div class="page-header">
+    <div>
+      <div class="page-title">Dashboard</div>
+      <div class="page-sub">${year} overview &mdash; ${managers.map(m=>m.name.split(' ')[0]).join(', ')}</div>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-secondary" onclick="openRequestModal()">+ Request Holiday</button>
+      <button class="btn btn-primary" onclick="openAddManager()">+ Add Manager</button>
+    </div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card accent">
+      <div class="stat-label">Managers tracked</div>
+      <div class="stat-value">${totalMgrs}</div>
+      <div class="stat-sub">across ${[...new Set(managers.map(m=>m.dept))].length} departments</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Off today</div>
+      <div class="stat-value" style="color:${onLeave>0?'var(--amber)':'var(--text)'}">${onLeave}</div>
+      <div class="stat-sub">${onLeave===0?'Everyone in today':'manager(s) on leave'}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Avg days taken (${year})</div>
+      <div class="stat-value">${avgTaken}</div>
+      <div class="stat-sub">out of avg ${Math.round(managers.reduce((s,m)=>s+m.allowance,0)/(managers.length||1))} allowance</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Pending approvals</div>
+      <div class="stat-value" style="color:${pending>0?'var(--amber)':'var(--text)'}">${pending}</div>
+      <div class="stat-sub">bookings awaiting approval</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Low allowance alerts</div>
+      <div class="stat-value" style="color:${lowAlert>0?'var(--red)':'var(--text)'}">${lowAlert}</div>
+      <div class="stat-sub">managers with &lt;5 days left</div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;flex-wrap:wrap;">
+    <div class="card" style="min-width:280px">
+      <div class="card-header">
+        <span class="card-title">Allowance overview</span>
+        <span style="font-size:12px;color:var(--text-muted)">${year}</span>
+      </div>
+      <div style="padding:0">
+        ${managers.map((m,i)=>{
+          const taken = takenInUnit(m.id, year, m);
+          const pct = Math.min(100, Math.round(taken/m.allowance*100));
+          const rem = m.allowance - taken;
+          const pal = palette(i);
+          const low = isLow(m, year);
+          return `<div style="padding:12px 16px;border-bottom:1px solid var(--border);">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+              <div class="avatar" style="background:${pal.bg};color:${pal.text};width:26px;height:26px;font-size:10px;">${initials(m.name)}</div>
+              <span style="font-weight:500;font-size:13px;flex:1">${m.name.split(' ')[0]}</span>
+              <span style="font-size:12px;font-family:'DM Mono',monospace;color:var(--text-muted)">${taken}/${m.allowance}${unitLabel(m,false)}</span>
+              ${low?`<span class="badge badge-red" style="font-size:10px;">${rem}${unitLabel(m,false)} left</span>`:''}
+            </div>
+            <div class="progress-bar" style="width:100%;height:8px;">
+              <div class="progress-fill" style="width:${pct}%;background:${pct>85?'var(--red)':pct>60?'var(--amber)':pal.bg};"></div>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>
+
+    <div class="card" style="min-width:280px">
+      <div class="card-header">
+        <span class="card-title">Upcoming leave</span>
+        <button class="btn btn-ghost btn-sm" onclick="showPage('bookings')">View all requests</button>
+      </div>
+      <div>
+        ${upcoming.length===0?`<div class="empty-state"><div class="empty-title">No upcoming leave in the next 60 days</div></div>`:''}
+        ${upcoming.map(b=>{
+          const m = managers.find(x=>x.id===b.mgr);
+          if(!m) return '';
+          const i = managers.indexOf(m);
+          const pal = palette(i);
+          const days = workdays(b.start, b.end);
+          const bd = bookingDuration(b, m);
+          const dUnit = bd.label;
+          return `<div class="booking-item">
+            <div class="booking-color" style="background:${pal.bg}"></div>
+            <div class="booking-info">
+              <div class="booking-name">${m.name}</div>
+              <div class="booking-dates">${fmt(b.start)} &rarr; ${fmt(b.end)}</div>
+              ${b.notes?`<div style="font-size:11px;color:var(--text-muted);margin-top:1px">${b.notes}</div>`:''}
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
+              <span style="font-size:12px;font-family:'DM Mono',monospace;color:var(--text-muted)">${dUnit}</span>
+              <span class="badge ${b.status==='approved'?'badge-green':'badge-amber'}" style="font-size:10px;">${b.status}</span>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>
+  </div>`;
+}
+
+// ─── Managers ────────────────────────────────────────────
+function renderManagers() {
+  let list = managers;
+  if (searchQ) list = list.filter(m=>m.name.toLowerCase().includes(searchQ)||m.dept.toLowerCase().includes(searchQ));
+  if (filterDept !== 'all') list = list.filter(m=>m.dept===filterDept);
+  const depts = ['all', ...[...new Set(managers.map(m=>m.dept))].sort()];
+
+  return `
+  <div class="page-header">
+    <div>
+      <div class="page-title">Managers</div>
+      <div class="page-sub">${managers.length} managers &mdash; ${year}</div>
+    </div>
+    <div class="header-actions">
+      <input class="search-input" type="text" placeholder="Search..." value="${searchQ}" oninput="searchQ=this.value;render()">
+      <button class="btn btn-primary" onclick="openAddManager()">+ Add Manager</button>
+    </div>
+  </div>
+
+  <div class="filter-row">
+    ${depts.map(d=>`<button class="pill ${filterDept===d?'active':''}" onclick="filterDept='${d}';render()">${d==='all'?'All departments':d}</button>`).join('')}
+  </div>
+
+  <div class="card">
+    <table>
+      <thead>
+        <tr>
+          <th>Manager</th>
+          <th>Department</th>
+          <th>Working Days</th>
+          <th>Allowance</th>
+          <th>Taken (${year})</th>
+          <th>Remaining</th>
+          <th>Status</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        ${list.length===0?`<tr><td colspan="7"><div class="empty-state"><div class="empty-title">No managers found</div></div></td></tr>`:''}
+        ${list.map((m,li)=>{
+          const i = managers.indexOf(m);
+          const pal = palette(i);
+          const taken = takenInUnit(m.id, year, m);
+          const rem = m.allowance - taken;
+          const pct = Math.min(100, Math.round(taken/m.allowance*100));
+          const leave = isOnLeave(m.id);
+          const low = isLow(m, year);
+          const pcolor = pct>85?'var(--red)':pct>60?'var(--amber)':pal.bg;
+          const ul = unitLabel(m, false);
+          return `<tr>
+            <td>
+              <div class="person-cell">
+                <div class="avatar" style="background:${pal.bg};color:${pal.text}">${initials(m.name)}</div>
+                <div>
+                  <div class="person-name">${m.name}</div>
+                  <div class="person-email">${m.title||''}</div>
+                </div>
+              </div>
+            </td>
+            <td><span class="dept-tag">${m.dept}</span></td>
+            <td style="font-size:12px;color:var(--text-muted);">${workdayLabel(m.workDays)}</td>
+            <td style="font-family:'DM Mono',monospace">${m.allowance} ${unitLabel(m)}</td>
+            <td style="font-family:'DM Mono',monospace">${taken} ${unitLabel(m)}</td>
+            <td>
+              <div class="progress-wrap">
+                <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${pcolor}"></div></div>
+                <span class="progress-text" style="color:${low?'var(--red)':''}">${rem}${ul}</span>
+              </div>
+            </td>
+            <td>
+              ${leave?`<span class="badge badge-amber"><span class="dot"></span>On leave</span>`:''}
+              ${low&&!leave?`<span class="badge badge-red">Low allowance</span>`:''}
+              ${!leave&&!low?`<span class="badge badge-green">Available</span>`:''}
+            </td>
+            <td>
+              <div class="actions-cell">
+                <button class="btn btn-ghost btn-sm" onclick="editManager(${m.id})">Edit</button>
+                <button class="btn btn-danger btn-sm" onclick="deleteManager(${m.id})">Remove</button>
+              </div>
+            </td>
+          </tr>`;
+        }).join('')}
+      </tbody>
+    </table>
+  </div>`;
+}
+
+// ─── Calendar ────────────────────────────────────────────
+function renderCalendar() {
+  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const daysInMonth = m => new Date(year, m+1, 0).getDate();
+  const todayStr = today();
+
+  // Build flat day list
+  const days = [];
+  const monthStarts = [];
+  for (let mi=0;mi<12;mi++) {
+    monthStarts.push(days.length);
+    const dim = daysInMonth(mi);
+    for (let d=1;d<=dim;d++) {
+      days.push(`${year}-${String(mi+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`);
+    }
+  }
+
+  let html = `
+  <div class="page-header">
+    <div>
+      <div class="page-title">Calendar view</div>
+      <div class="page-sub">Full year ${year} &mdash; all managers</div>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-secondary" onclick="openRequestModal()">+ Request Holiday</button>
+    </div>
+  </div>
+
+  <div style="display:flex;gap:12px;margin-bottom:0.5rem;flex-wrap:wrap;">
+    <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-muted)"><div style="width:12px;height:12px;border-radius:2px;background:var(--accent)"></div>Approved</div>
+    <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-muted)"><div style="width:12px;height:12px;border-radius:2px;background:var(--amber);opacity:0.6"></div>Pending</div>
+    <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-muted)"><div style="width:12px;height:12px;border-radius:2px;background:var(--surface2)"></div>Weekend</div>
+  </div>
+
+  <div class="card">
+    <div class="cal-wrap">
+      <table class="cal-table">
+        <thead>
+          <tr class="month-label-row">
+            <th class="mgr-hdr">Manager</th>
+            ${months.map((mon,mi)=>`<th colspan="${daysInMonth(mi)}" class="month-label" style="${mi>0?'border-left:1px solid var(--border)':''}">${mon}</th>`).join('')}
+          </tr>
+          <tr>
+            <th class="mgr-hdr"></th>
+            ${days.map((d,di)=>{
+              const isFirst = di>0&&d.slice(8)==='01';
+              return `<th style="${isFirst?'border-left:1px solid var(--border)':''};font-size:9px;padding:2px 0;">${d.slice(8)}</th>`;
+            }).join('')}
+          </tr>
+        </thead>
+        <tbody>
+          ${managers.map((m,i)=>{
+            const pal = palette(i);
+            return `<tr>
+              <td class="mgr-name-cell">
+                <div class="person-cell">
+                  <div class="avatar" style="background:${pal.bg};color:${pal.text};width:26px;height:26px;font-size:10px;">${initials(m.name)}</div>
+                  <div>
+                    <div style="font-weight:500;font-size:12px;">${m.name.split(' ')[0]}</div>
+                    <div style="font-size:10px;color:var(--text-muted)">${m.dept}</div>
+                  </div>
+                </div>
+              </td>
+              ${days.map((d,di)=>{
+                const isFirst = di>0&&d.slice(8)==='01';
+                const wkend = isWeekend(d);
+                const bk = bookings.find(b=>b.mgr===m.id&&b.start<=d&&b.end>=d);
+                let cls = '', bg = '';
+                if (bk && !wkend) {
+                  cls = bk.status==='approved'?'approved':'pending';
+                  bg = bk.status==='approved'?pal.bg:'var(--amber)';
+                } else if (wkend) { cls='weekend'; }
+                const isToday = d===todayStr;
+                const borderStyle = isFirst?'border-left:1px solid var(--border-med);':'';
+                return `<td style="${borderStyle}padding:3px 0.5px;">
+                  <div class="cal-day ${cls} ${isToday?'today-col':''}" style="${bg&&!wkend?`background:${bg};`:''}" title="${d}${bk?' – '+bk.status:''}"></div>
+                </td>`;
+              }).join('')}
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>
+    </div>
+  </div>`;
+  return html;
+}
+
+// ─── Bookings ────────────────────────────────────────────
+function renderBookings() {
+  let list = bookings.filter(b=>b.start.startsWith(year+''));
+  if (filterStatus!=='all') list = list.filter(b=>b.status===filterStatus);
+  if (searchQ) {
+    list = list.filter(b=>{
+      const m = managers.find(x=>x.id===b.mgr);
+      return m&&m.name.toLowerCase().includes(searchQ.toLowerCase());
+    });
+  }
+  list = list.sort((a,b)=>a.start.localeCompare(b.start));
+
+  return `
+  <div class="page-header">
+    <div>
+      <div class="page-title">Holiday Requests</div>
+      <div class="page-sub">${list.length} request${list.length!==1?'s':''} in ${year}</div>
+    </div>
+    <div class="header-actions">
+      <input class="search-input" type="text" placeholder="Search manager..." value="${searchQ}" oninput="searchQ=this.value;render()">
+      <button class="btn btn-primary" onclick="openRequestModal()">+ Request Holiday</button>
+    </div>
+  </div>
+
+  <div class="filter-row">
+    ${['all','approved','pending'].map(s=>`<button class="pill ${filterStatus===s?'active':''}" onclick="filterStatus='${s}';render()">${s==='all'?'All statuses':s.charAt(0).toUpperCase()+s.slice(1)}</button>`).join('')}
+  </div>
+
+  <div class="card">
+    <table>
+      <thead>
+        <tr>
+          <th>Manager</th>
+          <th>Start</th>
+          <th>End</th>
+          <th>Duration</th>
+          <th>Status</th>
+          <th>Notes</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        ${list.length===0?`<tr><td colspan="7"><div class="empty-state"><div class="empty-title">No bookings found</div></div></td></tr>`:''}
+        ${list.map(b=>{
+          const m = managers.find(x=>x.id===b.mgr);
+          if(!m) return '';
+          const i = managers.indexOf(m);
+          const pal = palette(i);
+          const bd = bookingDuration(b, m);
+          const dUnit = bd.label + (bd.custom ? ' <span style="font-size:10px;color:var(--text-faint);"> custom</span>' : '');
+          return `<tr>
+            <td>
+              <div class="person-cell">
+                <div class="avatar" style="background:${pal.bg};color:${pal.text}">${initials(m.name)}</div>
+                <div>
+                  <div class="person-name">${m.name}</div>
+                  <div class="person-email">${m.dept}</div>
+                </div>
+              </div>
+            </td>
+            <td style="font-family:'DM Mono',monospace;font-size:13px">${fmt(b.start)}</td>
+            <td style="font-family:'DM Mono',monospace;font-size:13px">${fmt(b.end)}</td>
+            <td style="font-family:'DM Mono',monospace;font-size:12.5px;">${dUnit}</td>
+            <td>
+              <span class="badge ${b.status==='approved'?'badge-green':'badge-amber'}">
+                <span class="dot"></span>${b.status}
+              </span>
+            </td>
+            <td style="color:var(--text-muted);font-size:12.5px">${b.notes||'—'}</td>
+            <td>
+              <div class="actions-cell">
+                ${b.status==='pending'?`<button class="btn btn-secondary btn-sm" onclick="approveBooking(${b.id})">Approve</button><button class="btn btn-ghost btn-sm" onclick="emailAlana(${b.id})" title="Resend email to Alana">&#9993; Email</button>`:''}
+                <button class="btn btn-ghost btn-sm" onclick="editBooking(${b.id})">Edit</button>
+                <button class="btn btn-danger btn-sm" onclick="deleteBooking(${b.id})">Delete</button>
+              </div>
+            </td>
+          </tr>`;
+        }).join('')}
+      </tbody>
+    </table>
+  </div>`;
+}
+
+// ─── Modal helpers ───────────────────────────────────────
+function openAddManager() {
+  document.getElementById('managerModalTitle').textContent = 'Add Manager';
+  document.getElementById('editMgrId').value = '';
+  document.getElementById('mgrName').value = '';
+  document.getElementById('mgrDept').value = '';
+  document.getElementById('mgrTitle').value = '';
+  document.getElementById('mgrAllowance').value = 25;
+  document.getElementById('mgrUnit').value = 'days';
+  [1,2,3,4,5].forEach(d => { const el=document.getElementById('wd'+d); if(el) el.checked=true; });
+  const el6=document.getElementById('wd6'); if(el6) el6.checked=false;
+  document.getElementById('managerModal').classList.add('open');
+}
+function editManager(id) {
+  const m = managers.find(x=>x.id===id);
+  document.getElementById('managerModalTitle').textContent = 'Edit Manager';
+  document.getElementById('editMgrId').value = id;
+  document.getElementById('mgrName').value = m.name;
+  document.getElementById('mgrDept').value = m.dept;
+  document.getElementById('mgrTitle').value = m.title||'';
+  document.getElementById('mgrAllowance').value = m.allowance;
+  document.getElementById('mgrUnit').value = m.unit||'days';
+  const wd = m.workDays || [1,2,3,4,5];
+  [1,2,3,4,5,6].forEach(d => { const el=document.getElementById('wd'+d); if(el) el.checked=wd.includes(d); });
+  document.getElementById('managerModal').classList.add('open');
+}
+function saveManager() {
+  const name = document.getElementById('mgrName').value.trim();
+  const dept = document.getElementById('mgrDept').value.trim();
+  const title = document.getElementById('mgrTitle').value.trim();
+  const allowance = parseFloat(document.getElementById('mgrAllowance').value)||25;
+  const unit = document.getElementById('mgrUnit').value;
+  const workDays = [1,2,3,4,5,6].filter(d=>{ const el=document.getElementById('wd'+d); return el&&el.checked; });
+  if(!name){ alert('Please enter a name'); return; }
+  if(workDays.length===0){ alert('Please select at least one working day'); return; }
+  const editId = parseInt(document.getElementById('editMgrId').value);
+  if(editId) {
+    const m = managers.find(x=>x.id===editId);
+    Object.assign(m,{name,dept,title,allowance,unit,workDays});
+    showToast('Manager updated');
+  } else {
+    managers.push({id:nextMgrId++,name,dept,title,allowance,unit,workDays});
+    showToast('Manager added');
+  }
+  saveData();
+  closeModal('managerModal');
+  render();
+}
+function deleteManager(id) {
+  if(!confirm('Remove this manager and all their bookings?')) return;
+  managers = managers.filter(m=>m.id!==id);
+  bookings = bookings.filter(b=>b.mgr!==id);
+  showToast('Manager removed');
+  saveData();
+  render();
+}
+
+function openRequestModal(mgrId) {
+  document.getElementById('bookingModalTitle').textContent = 'Request Holiday';
+  document.getElementById('editBookingId').value = '';
+  const sel = document.getElementById('bookMgr');
+  sel.innerHTML = managers.map(m=>`<option value="${m.id}"${m.id===mgrId?' selected':''}>${m.name} (${m.dept})</option>`).join('');
+  document.getElementById('bookStart').value = '';
+  document.getElementById('bookEnd').value = '';
+  document.getElementById('bookNotes').value = '';
+  document.getElementById('bookDuration').value = '';
+  document.getElementById('conflictWarn').classList.remove('show');
+  const preview = document.getElementById('dayPreview');
+  if(preview) preview.style.display = 'none';
+  const label = document.getElementById('durationAutoLabel');
+  if(label) label.textContent = 'auto-calculated from dates';
+  durationManuallyEdited = false;
+  // Set unit label
+  const firstMgr = mgrId ? managers.find(m=>m.id===mgrId) : managers[0];
+  const unitSpan = document.getElementById('bookDurationUnit');
+  if(unitSpan && firstMgr) unitSpan.textContent = unitLabel(firstMgr);
+  updateWorksOnInfo();
+  document.getElementById('bookMgr').onchange = function(){
+    durationManuallyEdited = false;
+    const label = document.getElementById('durationAutoLabel');
+    if(label) label.textContent = 'auto-calculated from dates';
+    document.getElementById('bookDuration').value = '';
+    const mgr = managers.find(m=>m.id===parseInt(this.value));
+    const unitSpan = document.getElementById('bookDurationUnit');
+    if(unitSpan && mgr) unitSpan.textContent = unitLabel(mgr);
+    updateWorksOnInfo();
+    checkConflict();
+  };
+  document.getElementById('bookingModal').classList.add('open');
+}
+function updateWorksOnInfo() {
+  const sel = document.getElementById('bookMgr');
+  const info = document.getElementById('worksOnInfo');
+  if(!sel||!info) return;
+  const mgr = managers.find(m=>m.id===parseInt(sel.value));
+  if(!mgr) { info.style.display='none'; return; }
+  const wd = mgr.workDays||[1,2,3,4,5];
+  const rem = mgr.allowance - takenInUnit(mgr.id, year, mgr);
+  info.style.display = 'block';
+  info.innerHTML = `&#128197; Works: <strong>${workdayLabel(wd)}</strong> &nbsp;&bull;&nbsp; Remaining allowance: <strong>${rem} ${unitLabel(mgr)}</strong>`;
+}
+function openAddBooking(mgrId) { openRequestModal(mgrId); }
+function editBooking(id) {
+  const b = bookings.find(x=>x.id===id);
+  const mgr = managers.find(m=>m.id===b.mgr);
+  document.getElementById('bookingModalTitle').textContent = 'Edit Request';
+  document.getElementById('editBookingId').value = id;
+  const sel = document.getElementById('bookMgr');
+  sel.innerHTML = managers.map(m=>`<option value="${m.id}"${m.id===b.mgr?' selected':''}>${m.name} (${m.dept})</option>`).join('');
+  document.getElementById('bookStart').value = b.start;
+  document.getElementById('bookEnd').value = b.end;
+  document.getElementById('bookNotes').value = b.notes||'';
+  // Populate duration — use stored custom value if present, else recalculate
+  const storedDur = b.customDuration != null ? b.customDuration : null;
+  const unitSpan = document.getElementById('bookDurationUnit');
+  if(unitSpan && mgr) unitSpan.textContent = unitLabel(mgr);
+  if(storedDur != null) {
+    document.getElementById('bookDuration').value = storedDur;
+    durationManuallyEdited = true;
+    const label = document.getElementById('durationAutoLabel');
+    if(label) label.textContent = 'manually set';
+  } else {
+    durationManuallyEdited = false;
+    const label = document.getElementById('durationAutoLabel');
+    if(label) label.textContent = 'auto-calculated from dates';
+  }
+  document.getElementById('conflictWarn').classList.remove('show');
+  updateWorksOnInfo();
+  document.getElementById('bookMgr').onchange = function(){
+    durationManuallyEdited = false;
+    document.getElementById('bookDuration').value = '';
+    const m = managers.find(m=>m.id===parseInt(this.value));
+    const unitSpan = document.getElementById('bookDurationUnit');
+    if(unitSpan && m) unitSpan.textContent = unitLabel(m);
+    updateWorksOnInfo(); checkConflict();
+  };
+  document.getElementById('bookingModal').classList.add('open');
+  checkConflict();
+}
+function approveBooking(id) {
+  const b = bookings.find(x=>x.id===id);
+  b.status='approved';
+  showToast('Booking approved');
+  saveData();
+  render();
+}
+function deleteBooking(id) {
+  if(!confirm('Delete this booking?')) return;
+  bookings = bookings.filter(b=>b.id!==id);
+  showToast('Booking deleted');
+  saveData();
+  render();
+}
+
+let durationManuallyEdited = false;
+
+function onDurationEdit() {
+  durationManuallyEdited = true;
+  const label = document.getElementById('durationAutoLabel');
+  if(label) label.textContent = 'manually set';
+  updateDurationPreview();
+}
+
+function updateDurationPreview() {
+  const mgrId = parseInt(document.getElementById('bookMgr').value);
+  const mgr = managers.find(m=>m.id===mgrId);
+  if(!mgr) return;
+  const durInput = document.getElementById('bookDuration');
+  const val = parseFloat(durInput.value);
+  const ul = unitLabel(mgr);
+  const takenVal = takenInUnit(mgrId, year, mgr);
+  const rem = mgr.allowance - takenVal;
+  const preview = document.getElementById('dayPreview');
+  if(!preview) return;
+  if(isNaN(val)||val<=0) { preview.style.display='none'; return; }
+  const afterRem = Math.round((rem - val) * 10) / 10;
+  preview.style.display = 'block';
+  preview.innerHTML = `This request covers <strong>${val} ${ul}</strong> from your allowance &mdash; <strong>${Math.max(0, afterRem)} ${ul}</strong> will remain.`;
+  // Update conflict warning based on manual value
+  const warn = document.getElementById('conflictWarn');
+  warn.classList.remove('show');
+  if(val > rem) { warn.textContent = `⚠ This request (${val} ${ul}) exceeds remaining allowance (${rem} ${ul})`; warn.classList.add('show'); }
+}
+
+function checkConflict() {
+  const mgrId = parseInt(document.getElementById('bookMgr').value);
+  const start = document.getElementById('bookStart').value;
+  const end = document.getElementById('bookEnd').value;
+  const warn = document.getElementById('conflictWarn');
+  warn.classList.remove('show');
+  const preview = document.getElementById('dayPreview');
+  if(preview) preview.style.display = 'none';
+  if(!start||!end||start>end) return;
+  const mgr = managers.find(m=>m.id===mgrId);
+  const ul = unitLabel(mgr);
+  const takenVal = takenInUnit(mgrId, new Date(start+'T12:00:00').getFullYear(), mgr);
+  const rem = mgr.allowance - takenVal;
+
+  // Auto-fill duration only if user hasn't manually edited it
+  if(!durationManuallyEdited) {
+    const days = mgrWorkdays(start, end, mgr);
+    const autoVal = mgr.unit==='hours' ? days*HRS_PER_DAY : days;
+    const durInput = document.getElementById('bookDuration');
+    if(durInput) durInput.value = autoVal;
+    const unitSpan = document.getElementById('bookDurationUnit');
+    if(unitSpan) unitSpan.textContent = ul;
+    const label = document.getElementById('durationAutoLabel');
+    if(label) label.textContent = 'auto-calculated from dates';
+  }
+
+  // Update preview using current duration field value
+  updateDurationPreview();
+
+  const editId = parseInt(document.getElementById('editBookingId').value)||0;
+  const conflict = bookings.find(b=>b.mgr===mgrId&&b.id!==editId&&!(b.end<start||b.start>end));
+  if(conflict) { warn.textContent = `⚠ Overlaps with an existing booking (${fmt(conflict.start)} – ${fmt(conflict.end)})`; warn.classList.add('show'); }
+}
+
+function saveBooking() {
+  const mgrId = parseInt(document.getElementById('bookMgr').value);
+  const start = document.getElementById('bookStart').value;
+  const end = document.getElementById('bookEnd').value;
+  const notes = document.getElementById('bookNotes').value.trim();
+  if(!start||!end){ alert('Please select start and end dates'); return; }
+  if(start>end){ alert('End date must be after start date'); return; }
+  const editId = parseInt(document.getElementById('editBookingId').value);
+  const mgr = managers.find(m=>m.id===mgrId);
+
+  // Use manually entered duration if set, else auto-calculate
+  const durInput = parseFloat(document.getElementById('bookDuration').value);
+  const autoDays = mgrWorkdays(start, end, mgr);
+  const autoVal = mgr.unit==='hours' ? autoDays*HRS_PER_DAY : autoDays;
+  const customDuration = (!isNaN(durInput) && durInput > 0) ? durInput : autoVal;
+  const dUnit = `${customDuration} ${unitLabel(mgr, customDuration!==1)}`;
+
+  if(editId) {
+    const b = bookings.find(x=>x.id===editId);
+    Object.assign(b,{mgr:mgrId,start,end,status:'pending',notes,customDuration});
+    showToast('Request updated — awaiting approval');
+  } else {
+    bookings.push({id:nextId++,mgr:mgrId,start,end,status:'pending',notes,customDuration});
+    showToast('Request submitted — email opening for Alana');
+  }
+  durationManuallyEdited = false;
+  saveData();
+  closeModal('bookingModal');
+  render();
+
+  // Open mailto to Alana
+  if(!editId) {
+    const subject = encodeURIComponent(`Holiday Request — ${mgr.name}`);
+    const body = encodeURIComponent(
+`Hi Alana,
+
+${mgr.name} (${mgr.dept}${mgr.title ? ', ' + mgr.title : ''}) has submitted a holiday request via LeaveDesk.
+
+Details:
+  Name:       ${mgr.name}
+  Start date: ${fmt(start)}
+  End date:   ${fmt(end)}
+  Duration:   ${dUnit}${notes ? '\n  Notes:      ' + notes : ''}
+
+Please log in to LeaveDesk to approve or decline this request.
+
+This is an automated notification from LeaveDesk.`
+    );
+    window.location.href = `mailto:Alana.nugent@caremark.co.uk?subject=${subject}&body=${body}`;
+  }
+}
+
+function exportForSharing() {
+  // Read the current HTML source
+  const originalHtml = document.documentElement.outerHTML;
+
+  // Serialise live data
+  const dataJson = JSON.stringify({ managers, bookings, nextId, nextMgrId });
+
+  // Replace the DEFAULT_MANAGERS / DEFAULT_BOOKINGS block with current data
+  // We inject a <script> tag just before 
+<script id="baked-data">
+(function(){
+  var d = {"managers":[{"id":8,"name":"Alana Nugent","dept":"SMT","title":"","allowance":30,"unit":"days","workDays":[1,2,3,4,5]},{"id":9,"name":"Alison Crosbie","dept":"Finance","title":"","allowance":17,"unit":"days","workDays":[2,3,4]},{"id":10,"name":"Amanda Walsh","dept":"DCM","title":"","allowance":28,"unit":"days","workDays":[1,2,3,4,5]},{"id":11,"name":"Christopher Downes","dept":"SMT","title":"","allowance":28,"unit":"days","workDays":[1,2,3,4,5]},{"id":12,"name":"Emma Hanna","dept":"SMT","title":"","allowance":28,"unit":"days","workDays":[1,2,3,4,5]},{"id":13,"name":"Gulnaz Amjad","dept":"DCM","title":"","allowance":31,"unit":"days","workDays":[1,2,3,4,5]},{"id":14,"name":"Joanne Faulkner","dept":"SMT","title":"","allowance":112,"unit":"hours","workDays":[1,3,4]},{"id":15,"name":"Melissa Dempster","dept":"DCM","title":"","allowance":110.5,"unit":"hours","workDays":[1,2,4,5]},{"id":16,"name":"Roxanne Abel","dept":"SMT","title":"","allowance":32,"unit":"days","workDays":[1,2,3,4,5]},{"id":17,"name":"Susan Currie","dept":"","title":"","allowance":28,"unit":"days","workDays":[1,2,3,4,5]}],"bookings":[{"id":12,"mgr":8,"start":"2026-01-01","end":"2026-01-01","status":"approved","notes":""},{"id":13,"mgr":8,"start":"2026-01-15","end":"2026-01-16","status":"approved","notes":""},{"id":14,"mgr":8,"start":"2026-03-09","end":"2026-03-09","status":"approved","notes":"","customDuration":1},{"id":15,"mgr":8,"start":"2026-04-10","end":"2026-04-10","status":"approved","notes":"","customDuration":1},{"id":16,"mgr":8,"start":"2026-10-12","end":"2026-10-23","status":"approved","notes":"","customDuration":10},{"id":17,"mgr":9,"start":"2026-01-08","end":"2026-01-08","status":"approved","notes":"","customDuration":1},{"id":18,"mgr":9,"start":"2026-03-02","end":"2026-03-06","status":"approved","notes":"","customDuration":3},{"id":19,"mgr":8,"start":"2026-06-08","end":"2026-06-14","status":"approved","notes":"","customDuration":3},{"id":20,"mgr":9,"start":"2026-03-27","end":"2026-03-27","status":"approved","notes":"","customDuration":1},{"id":21,"mgr":10,"start":"2026-01-01","end":"2026-01-01","status":"approved","notes":"","customDuration":1},{"id":22,"mgr":10,"start":"2026-01-19","end":"2026-01-22","status":"approved","notes":"","customDuration":4},{"id":23,"mgr":10,"start":"2026-05-04","end":"2026-05-08","status":"approved","notes":"","customDuration":5},{"id":24,"mgr":10,"start":"2026-02-13","end":"2026-02-16","status":"approved","notes":"","customDuration":2},{"id":26,"mgr":10,"start":"2026-02-06","end":"2026-02-06","status":"approved","notes":"","customDuration":0.5},{"id":27,"mgr":10,"start":"2026-03-26","end":"2026-04-02","status":"approved","notes":"","customDuration":6},{"id":28,"mgr":10,"start":"2026-08-24","end":"2026-08-30","status":"approved","notes":"","customDuration":5},{"id":29,"mgr":11,"start":"2026-01-01","end":"2026-01-01","status":"approved","notes":"","customDuration":1},{"id":30,"mgr":11,"start":"2026-01-30","end":"2026-01-30","status":"approved","notes":"","customDuration":1},{"id":31,"mgr":11,"start":"2026-02-06","end":"2026-02-06","status":"approved","notes":"","customDuration":1},{"id":32,"mgr":11,"start":"2026-03-13","end":"2026-03-13","status":"approved","notes":"","customDuration":1},{"id":34,"mgr":11,"start":"2026-03-31","end":"2026-04-07","status":"approved","notes":"","customDuration":6},{"id":35,"mgr":12,"start":"2026-01-01","end":"2026-01-01","status":"approved","notes":"","customDuration":1},{"id":36,"mgr":12,"start":"2026-01-05","end":"2026-01-06","status":"approved","notes":"","customDuration":2},{"id":37,"mgr":12,"start":"2026-04-10","end":"2026-04-15","status":"approved","notes":"","customDuration":4},{"id":38,"mgr":12,"start":"2026-08-31","end":"2026-08-31","status":"approved","notes":"","customDuration":1},{"id":39,"mgr":12,"start":"2026-09-21","end":"2026-10-04","status":"approved","notes":"","customDuration":10},{"id":40,"mgr":12,"start":"2026-04-09","end":"2026-04-09","status":"approved","notes":"","customDuration":0.5},{"id":41,"mgr":13,"start":"2026-01-01","end":"2026-01-01","status":"approved","notes":"","customDuration":1},{"id":43,"mgr":13,"start":"2026-03-16","end":"2026-03-22","status":"approved","notes":"","customDuration":5},{"id":44,"mgr":13,"start":"2026-05-22","end":"2026-05-31","status":"approved","notes":"","customDuration":6},{"id":45,"mgr":13,"start":"2026-07-24","end":"2026-08-03","status":"approved","notes":"","customDuration":7},{"id":46,"mgr":13,"start":"2026-02-17","end":"2026-02-17","status":"approved","notes":"","customDuration":0.5},{"id":47,"mgr":13,"start":"2026-04-10","end":"2026-04-10","status":"approved","notes":"","customDuration":0.5},{"id":49,"mgr":13,"start":"2026-01-22","end":"2026-01-22","status":"approved","notes":"","customDuration":0.5},{"id":50,"mgr":14,"start":"2026-01-12","end":"2026-01-15","status":"approved","notes":"","customDuration":20},{"id":51,"mgr":14,"start":"2026-02-23","end":"2026-02-23","status":"approved","notes":"","customDuration":5},{"id":52,"mgr":15,"start":"2026-05-12","end":"2026-05-19","status":"approved","notes":"","customDuration":23},{"id":53,"mgr":15,"start":"2026-04-17","end":"2026-04-17","status":"approved","notes":"","customDuration":7.5},{"id":54,"mgr":15,"start":"2026-05-11","end":"2026-05-11","status":"approved","notes":"","customDuration":7.5},{"id":55,"mgr":15,"start":"2026-08-21","end":"2026-08-21","status":"approved","notes":"","customDuration":4},{"id":56,"mgr":15,"start":"2026-06-19","end":"2026-06-19","status":"approved","notes":"","customDuration":7.5},{"id":57,"mgr":15,"start":"2026-04-17","end":"2026-04-17","status":"approved","notes":"","customDuration":7.5},{"id":58,"mgr":15,"start":"2026-07-13","end":"2026-07-13","status":"approved","notes":"","customDuration":7.5},{"id":59,"mgr":15,"start":"2026-07-14","end":"2026-07-14","status":"approved","notes":"","customDuration":4},{"id":60,"mgr":16,"start":"2026-01-01","end":"2026-01-01","status":"approved","notes":"","customDuration":1},{"id":61,"mgr":16,"start":"2026-06-24","end":"2026-07-05","status":"approved","notes":"","customDuration":8},{"id":62,"mgr":16,"start":"2026-01-26","end":"2026-01-26","status":"approved","notes":"","customDuration":1},{"id":63,"mgr":16,"start":"2026-01-28","end":"2026-01-28","status":"approved","notes":"","customDuration":1},{"id":64,"mgr":16,"start":"2026-04-20","end":"2026-04-22","status":"approved","notes":"","customDuration":3},{"id":65,"mgr":16,"start":"2026-03-06","end":"2026-03-06","status":"approved","notes":"","customDuration":1},{"id":66,"mgr":17,"start":"2026-01-01","end":"2026-01-01","status":"approved","notes":"","customDuration":1},{"id":67,"mgr":17,"start":"2026-06-22","end":"2026-07-06","status":"approved","notes":"","customDuration":11},{"id":68,"mgr":17,"start":"2026-10-19","end":"2026-10-26","status":"approved","notes":"","customDuration":6},{"id":70,"mgr":17,"start":"2026-03-04","end":"2026-03-04","status":"approved","notes":"","customDuration":0.5},{"id":71,"mgr":17,"start":"2026-01-19","end":"2026-01-19","status":"approved","notes":"","customDuration":0.5},{"id":72,"mgr":17,"start":"2026-03-25","end":"2026-03-25","status":"approved","notes":"","customDuration":1},{"id":73,"mgr":17,"start":"2026-03-27","end":"2026-03-27","status":"approved","notes":"","customDuration":1}],"nextId":74,"nextMgrId":18};
+  // Override localStorage so loadData() picks it up immediately
+  try { localStorage.setItem('leavedesk_v1', JSON.stringify(d)); } catch(e){}
+})();
+</script>
+</body> that overwrites defaults on load
+  const injectionScript = `
+<script id="baked-data">
+(function(){
+  var d = ${dataJson};
+  // Override localStorage so loadData() picks it up immediately
+  try { localStorage.setItem('leavedesk_v1', JSON.stringify(d)); } catch(e){}
+})();
+<\/script>`;
+
+  const exported = originalHtml.replace('</body>', injectionScript + '\n</body>');
+
+  // Download as a new file
+  const blob = new Blob([exported], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'leavedesk-shared.html';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('Exported! Drop leavedesk-shared.html into Netlify.');
+}
+
+function clearAllData() {
+  if(!confirm('Reset everything back to the demo data? This cannot be undone.')) return;
+  localStorage.removeItem('leavedesk_v1');
+  loadData();
+  showToast('Reset to demo data');
+  render();
+}
+
+function emailAlana(id) {
+  const b = bookings.find(x=>x.id===id);
+  const mgr = managers.find(m=>m.id===b.mgr);
+  const autoDays = mgrWorkdays(b.start, b.end, mgr);
+  const autoVal = mgr.unit==='hours' ? autoDays*HRS_PER_DAY : autoDays;
+  const dur = b.customDuration != null ? b.customDuration : autoVal;
+  const dUnit = `${dur} ${unitLabel(mgr, dur!==1)}`;
+  const subject = encodeURIComponent(`Holiday Request — ${mgr.name}`);
+  const body = encodeURIComponent(
+`Hi Alana,
+
+${mgr.name} (${mgr.dept}${mgr.title ? ', ' + mgr.title : ''}) has submitted a holiday request via LeaveDesk.
+
+Details:
+  Name:       ${mgr.name}
+  Start date: ${fmt(b.start)}
+  End date:   ${fmt(b.end)}
+  Duration:   ${dUnit}${b.notes ? '\n  Notes:      ' + b.notes : ''}
+
+Please log in to LeaveDesk to approve or decline this request.
+
+This is an automated notification from LeaveDesk.`
+  );
+  window.location.href = `mailto:Alana.nugent@caremark.co.uk?subject=${subject}&body=${body}`;
+}
+
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{ if(e.target===o) o.classList.remove('open'); }));
+
+// ─── Init ─────────────────────────────────────────────────
+document.getElementById('sidebarYear').textContent = year;
+render();
+</script>
+
+
+</body></html>
