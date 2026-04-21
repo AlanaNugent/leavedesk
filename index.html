@@ -132,7 +132,7 @@ body {
   .page-header .header-actions { width: 100%; flex-wrap: wrap; }
   .page-header .header-actions .btn { flex: 1; justify-content: center; font-size: 13px; padding: 8px 10px; }
   .search-input { width: 100%; }
-  .card { border-radius: 12px; overflow: hidden; }
+  .card { border-radius: 12px; overflow: visible; }
   table { font-size: 12.5px; width: 100%; }
   thead th { padding: 8px 10px; font-size: 10px; }
   tbody td { padding: 10px; }
@@ -363,6 +363,13 @@ tbody tr:last-child td { border-bottom: none; }
 .badge-blue { background: var(--blue-light); color: var(--blue); }
 .badge-gray { background: var(--surface2); color: var(--text-muted); }
 .dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; display: inline-block; }
+
+/* Table horizontal scroll wrapper */
+.table-scroll-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  width: 100%;
+}
 
 /* Calendar */
 .cal-wrap { overflow-x: auto; padding: 0; }
@@ -1233,7 +1240,7 @@ function renderManagers() {
   </div>
 
   <div class="card">
-    <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;">
+    <div class="table-scroll-wrap">
     <table style="min-width:700px;">
       <thead>
         <tr>
