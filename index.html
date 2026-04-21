@@ -346,6 +346,7 @@ tbody tr:last-child td { border-bottom: none; }
   box-shadow: var(--shadow-lg);
   max-height: 90vh;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 .modal h3 { font-size: 17px; font-weight: 600; margin-bottom: 1.5rem; letter-spacing: -0.2px; }
 .form-row { margin-bottom: 1rem; }
@@ -367,26 +368,38 @@ tbody tr:last-child td { border-bottom: none; }
 .form-hint { font-size: 11.5px; color: var(--text-muted); margin-top: 4px; }
 
 @media (max-width: 768px) {
-  .overlay { align-items: flex-end; padding: 0; z-index: 1000; }
+  .overlay {
+    align-items: flex-end;
+    padding: 0;
+    z-index: 1000;
+  }
   .modal {
+    display: flex;
+    flex-direction: column;
     border-radius: 20px 20px 0 0;
-    padding: 1.5rem 1.25rem;
-    padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
-    max-height: 92vh;
+    padding: 0;
+    max-height: 88vh;
+    height: auto;
     width: 100%;
     max-width: 100%;
+    overflow: hidden;
+  }
+  .modal-inner-scroll {
+    flex: 1;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 1.25rem 1.25rem 0;
   }
   .modal-actions {
-    position: sticky;
-    bottom: 0;
-    background: var(--surface);
-    padding: 1rem 0 0.5rem;
-    margin-top: 1rem;
+    flex-shrink: 0;
+    display: flex;
+    gap: 8px;
+    padding: 1rem 1.25rem calc(1rem + env(safe-area-inset-bottom, 0px));
     border-top: 1px solid var(--border);
-    z-index: 10;
+    background: var(--surface);
   }
-  .modal-actions .btn { flex: 1; justify-content: center; padding: 12px; font-size: 15px; }
+  .modal-actions .btn { flex: 1; justify-content: center; padding: 13px; font-size: 15px; }
+  .modal h3 { padding: 1.25rem 1.25rem 0; margin-bottom: 1rem; }
 }
 
 /* Alerts */
@@ -449,19 +462,30 @@ tbody tr:hover .actions-cell { opacity: 1; }
 @media (max-width: 768px) {
   .sidebar { display: none !important; width: 0 !important; }
   .app { display: block; height: 100vh; overflow: hidden; }
-  .main { width: 100% !important; padding: 0 0.85rem 5.5rem; overflow-y: auto; height: calc(100vh - 52px); }
+  .main {
+    width: 100% !important;
+    padding: 0.75rem 0.85rem 6rem;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+    height: calc(100vh - 52px);
+    box-sizing: border-box;
+  }
   .stats-grid { grid-template-columns: 1fr 1fr; }
   .page-header { flex-direction: column; gap: 0.75rem; }
   .page-header .header-actions { width: 100%; flex-wrap: wrap; }
   .page-header .header-actions .btn { flex: 1; justify-content: center; font-size: 13px; padding: 8px 10px; }
   .search-input { width: 100%; }
-  .card { border-radius: 12px; }
-  table { font-size: 12.5px; }
+  .card { border-radius: 12px; overflow: hidden; }
+  .card table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; width: 100%; }
+  .card thead, .card tbody, .card tr { display: table; width: 100%; table-layout: fixed; }
+  table { font-size: 12.5px; width: 100%; }
   thead th { padding: 8px 10px; font-size: 10px; }
   tbody td { padding: 10px 10px; }
   .actions-cell { opacity: 1; }
   .form-row-2 { grid-template-columns: 1fr; }
   .toast { bottom: 80px; }
+  .filter-row { flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 4px; }
+  .filter-row .pill { flex-shrink: 0; }
 }
 
 /* Mobile bottom nav */
@@ -675,6 +699,7 @@ tbody tr:hover .actions-cell { opacity: 1; }
 <div class="overlay" id="managerModal">
   <div class="modal">
     <h3 id="managerModalTitle">Add Manager</h3>
+    <div class="modal-inner-scroll">
     <input type="hidden" id="editMgrId">
     <div class="form-row">
       <label class="form-label">Full Name</label>
@@ -713,6 +738,7 @@ tbody tr:hover .actions-cell { opacity: 1; }
       </div>
       <div class="form-hint">Select the days this person works each week.</div>
     </div>
+    </div><!-- end modal-inner-scroll -->
     <div class="modal-actions">
       <button class="btn btn-ghost" onclick="closeModal('managerModal')">Cancel</button>
       <button class="btn btn-primary" onclick="saveManager()">Save Manager</button>
@@ -723,6 +749,7 @@ tbody tr:hover .actions-cell { opacity: 1; }
 <div class="overlay" id="bookingModal">
   <div class="modal">
     <h3 id="bookingModalTitle">Request Holiday</h3>
+    <div class="modal-inner-scroll">
     <input type="hidden" id="editBookingId">
     <div class="form-row">
       <label class="form-label">Your Name</label>
@@ -756,9 +783,10 @@ tbody tr:hover .actions-cell { opacity: 1; }
       <input class="form-input" id="bookNotes" type="text" placeholder="e.g. Family holiday">
     </div>
     <div class="conflict-warning" id="conflictWarn"></div>
-    <div style="background:var(--blue-light);border-radius:var(--radius);padding:10px 14px;font-size:12.5px;color:var(--blue);margin-top:8px;">
+    <div style="background:var(--blue-light);border-radius:var(--radius);padding:10px 14px;font-size:12.5px;color:var(--blue);margin-top:8px;margin-bottom:0.5rem;">
       &#9993; Your request will be sent to <strong>Alana Nugent</strong> for approval by email.
     </div>
+    </div><!-- end modal-inner-scroll -->
     <div class="modal-actions">
       <button class="btn btn-ghost" onclick="closeModal('bookingModal')">Cancel</button>
       <button class="btn btn-primary" onclick="saveBooking()">Submit Request</button>
@@ -1348,6 +1376,66 @@ function renderBookings() {
     });
   }
   list = list.sort((a,b)=>a.start.localeCompare(b.start));
+  const isMobile = window.innerWidth <= 768;
+
+  const rows = list.map(b=>{
+    const m = managers.find(x=>x.id===b.mgr);
+    if(!m) return '';
+    const i = managers.indexOf(m);
+    const pal = palette(i);
+    const bd = bookingDuration(b, m);
+    const dUnit = bd.label + (bd.custom ? ' <span style="font-size:10px;color:var(--text-faint);"> custom</span>' : '');
+    const actions = `
+      ${b.status==='pending'?`<button class="btn btn-secondary btn-sm" onclick="approveBooking(${b.id})">Approve</button><button class="btn btn-ghost btn-sm" onclick="emailAlana(${b.id})">&#9993; Email</button>`:''}
+      <button class="btn btn-ghost btn-sm" onclick="editBooking(${b.id})">Edit</button>
+      <button class="btn btn-danger btn-sm" onclick="deleteBooking(${b.id})">Delete</button>`;
+
+    if(isMobile) {
+      return `<div style="padding:14px 16px;border-bottom:1px solid var(--border);">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+          <div class="avatar" style="background:${pal.bg};color:${pal.text};width:32px;height:32px;font-size:11px;flex-shrink:0;">${initials(m.name)}</div>
+          <div style="flex:1;min-width:0;">
+            <div style="font-weight:500;font-size:14px;">${m.name}</div>
+            <div style="font-size:12px;color:var(--text-muted);">${fmt(b.start)} &rarr; ${fmt(b.end)}</div>
+          </div>
+          <span class="badge ${b.status==='approved'?'badge-green':'badge-amber'}" style="flex-shrink:0;"><span class="dot"></span>${b.status}</span>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;font-size:12.5px;color:var(--text-muted);margin-bottom:10px;flex-wrap:wrap;">
+          <span style="font-family:'DM Mono',monospace;">${dUnit}</span>
+          ${b.notes?`<span>&bull; ${b.notes}</span>`:''}
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">${actions}</div>
+      </div>`;
+    }
+
+    return `<tr>
+      <td>
+        <div class="person-cell">
+          <div class="avatar" style="background:${pal.bg};color:${pal.text}">${initials(m.name)}</div>
+          <div>
+            <div class="person-name">${m.name}</div>
+            <div class="person-email">${m.dept}</div>
+          </div>
+        </div>
+      </td>
+      <td style="font-family:'DM Mono',monospace;font-size:13px">${fmt(b.start)}</td>
+      <td style="font-family:'DM Mono',monospace;font-size:13px">${fmt(b.end)}</td>
+      <td style="font-family:'DM Mono',monospace;font-size:12.5px;">${dUnit}</td>
+      <td><span class="badge ${b.status==='approved'?'badge-green':'badge-amber'}"><span class="dot"></span>${b.status}</span></td>
+      <td style="color:var(--text-muted);font-size:12.5px">${b.notes||'—'}</td>
+      <td><div class="actions-cell">${actions}</div></td>
+    </tr>`;
+  }).join('');
+
+  const tableOrCards = isMobile
+    ? `<div class="card">${list.length===0?`<div class="empty-state"><div class="empty-title">No requests found</div></div>`:rows}</div>`
+    : `<div class="card"><table>
+        <thead><tr>
+          <th>Manager</th><th>Start</th><th>End</th>
+          <th>Duration</th><th>Status</th><th>Notes</th><th></th>
+        </tr></thead>
+        <tbody>${list.length===0?`<tr><td colspan="7"><div class="empty-state"><div class="empty-title">No requests found</div></div></td></tr>`:rows}</tbody>
+      </table></div>`;
 
   return `
   <div class="page-header">
@@ -1360,64 +1448,10 @@ function renderBookings() {
       <button class="btn btn-primary" onclick="openRequestModal()">+ Request Holiday</button>
     </div>
   </div>
-
   <div class="filter-row">
     ${['all','approved','pending'].map(s=>`<button class="pill ${filterStatus===s?'active':''}" onclick="filterStatus='${s}';render()">${s==='all'?'All statuses':s.charAt(0).toUpperCase()+s.slice(1)}</button>`).join('')}
   </div>
-
-  <div class="card">
-    <table>
-      <thead>
-        <tr>
-          <th>Manager</th>
-          <th>Start</th>
-          <th>End</th>
-          <th>Duration</th>
-          <th>Status</th>
-          <th>Notes</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        ${list.length===0?`<tr><td colspan="7"><div class="empty-state"><div class="empty-title">No bookings found</div></div></td></tr>`:''}
-        ${list.map(b=>{
-          const m = managers.find(x=>x.id===b.mgr);
-          if(!m) return '';
-          const i = managers.indexOf(m);
-          const pal = palette(i);
-          const bd = bookingDuration(b, m);
-          const dUnit = bd.label + (bd.custom ? ' <span style="font-size:10px;color:var(--text-faint);"> custom</span>' : '');
-          return `<tr>
-            <td>
-              <div class="person-cell">
-                <div class="avatar" style="background:${pal.bg};color:${pal.text}">${initials(m.name)}</div>
-                <div>
-                  <div class="person-name">${m.name}</div>
-                  <div class="person-email">${m.dept}</div>
-                </div>
-              </div>
-            </td>
-            <td style="font-family:'DM Mono',monospace;font-size:13px">${fmt(b.start)}</td>
-            <td style="font-family:'DM Mono',monospace;font-size:13px">${fmt(b.end)}</td>
-            <td style="font-family:'DM Mono',monospace;font-size:12.5px;">${dUnit}</td>
-            <td>
-              <span class="badge ${b.status==='approved'?'badge-green':'badge-amber'}">
-                <span class="dot"></span>${b.status}
-              </span>
-            </td>
-            <td style="color:var(--text-muted);font-size:12.5px">${b.notes||'—'}</td>
-            <td>
-              <div class="actions-cell">
-                ${b.status==='pending'?`<button class="btn btn-secondary btn-sm" onclick="approveBooking(${b.id})">Approve</button><button class="btn btn-ghost btn-sm" onclick="emailAlana(${b.id})" title="Resend email to Alana">&#9993; Email</button>`:''}
-                <button class="btn btn-ghost btn-sm" onclick="editBooking(${b.id})">Edit</button>
-                <button class="btn btn-danger btn-sm" onclick="deleteBooking(${b.id})">Delete</button>
-              </div>
-            </td>
-          </tr>`;
-        }).join('')}
-      </tbody>
-    </table>
-  </div>`;
+  ${tableOrCards}`;
 }
 
 // ─── Modal helpers ───────────────────────────────────────
@@ -1768,4 +1802,3 @@ loadData().then(()=>{ render(); });
 </script>
 </body>
 </html>
-
